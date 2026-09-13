@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M.A للتدريب المهني - منصة الاختبارات القانونية</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
+  :root {
+    --primary: #1a3a5c; --primary-light: #2c5aa0; --accent: #d4af37;
+    --success: #28a745; --danger: #dc3545; --warning: #ffc107;
+    --bg: #f0f2f5; --card: #ffffff; --text: #2c3e50;
+  }
+  body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* ===== LOGIN ===== */
+  #loginScreen { position: fixed; inset: 0; background: linear-gradient(135deg, #1a3a5c 0%, #2c5aa0 50%, #1a3a5c 100%); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+  .login-box { background: var(--card); padding: 50px 40px; border-radius: 20px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); text-align: center; width: 90%; max-width: 450px; animation: fadeIn 0.6s ease; }
+  .login-box .logo { width: 90px; height: 90px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; color: #fff; font-size: 32px; font-weight: bold; box-shadow: 0 8px 25px rgba(26,58,92,0.4); }
+  .login-box h1 { color: var(--primary); font-size: 22px; margin-bottom: 8px; }
+  .login-box h2 { color: var(--accent); font-size: 15px; margin-bottom: 25px; font-weight: 600; }
+  .login-box .designer-credit { font-size: 12px; color: #888; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; }
+  .password-input { width: 100%; padding: 15px 20px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 18px; text-align: center; letter-spacing: 3px; transition: all 0.3s; outline: none; direction: ltr; }
+  .password-input:focus { border-color: var(--primary-light); box-shadow: 0 0 0 4px rgba(44,90,160,0.1); }
+  .login-btn { width: 100%; padding: 15px; margin-top: 20px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+  .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26,58,92,0.4); }
+  .error-msg { color: var(--danger); font-size: 14px; margin-top: 12px; min-height: 20px; }
+
+  /* ===== HEADER ===== */
+  header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; padding: 18px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 100; }
+  header .brand { display: flex; align-items: center; gap: 15px; }
+  header .brand .logo-sm { width: 45px; height: 45px; border-radius: 12px; background: var(--accent); color: var(--primary); display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; }
+  header .brand-text h1 { font-size: 18px; }
+  header .brand-text p { font-size: 11px; opacity: 0.8; color: var(--accent); }
+  header .designer-tag { font-size: 11px; opacity: 0.85; background: rgba(255,255,255,0.12); padding: 6px 12px; border-radius: 20px; }
+
+  /* ===== MAIN ===== */
+  main { flex: 1; padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; }
+  .welcome-section { background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 20px; padding: 35px; color: #fff; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .welcome-section::after { content: '⚖️'; position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-size: 120px; opacity: 0.08; }
+  .welcome-section h2 { font-size: 26px; margin-bottom: 10px; }
+  .welcome-section p { opacity: 0.9; font-size: 15px; line-height: 1.7; }
+  .welcome-section .credit-line { margin-top: 15px; font-size: 13px; background: rgba(255,255,255,0.12); display: inline-block; padding: 6px 16px; border-radius: 20px; color: var(--accent); }
+  .exams-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 22px; }
+  .exam-card { background: var(--card); border-radius: 18px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.07); border-top: 5px solid var(--primary-light); transition: all 0.3s; cursor: pointer; position: relative; overflow: hidden; }
+  .exam-card:hover { transform: translateY(-5px); box-shadow: 0 12px 35px rgba(0,0,0,0.13); }
+  .exam-card .icon { width: 60px; height: 60px; border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 28px; margin-bottom: 18px; background: linear-gradient(135deg, #e8f0fe, #d0e0f0); }
+  .exam-card h3 { color: var(--primary); font-size: 17px; margin-bottom: 8px; line-height: 1.5; }
+  .exam-card .meta { font-size: 13px; color: #777; margin-bottom: 18px; line-height: 1.8; }
+  .exam-card .meta span { display: inline-block; background: #f5f7fa; padding: 3px 10px; border-radius: 10px; margin-left: 6px; margin-bottom: 4px; }
+  .start-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; }
+  .exam-card .card-credit { font-size: 10px; color: #bbb; text-align: center; margin-top: 12px; }
+
+  /* ===== EXAM ===== */
+  #examScreen { display: none; }
+  .exam-header { background: var(--card); border-radius: 15px; padding: 22px 28px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+  .exam-header h2 { color: var(--primary); font-size: 18px; }
+  .exam-header .exam-credit { font-size: 11px; color: #aaa; }
+  .timer-box { background: linear-gradient(135deg, #fff3cd, #ffe69c); padding: 10px 22px; border-radius: 12px; font-weight: bold; color: #856404; font-size: 18px; }
+  .timer-box.danger { background: linear-gradient(135deg, #f8d7da, #f5c6cb); color: #721c24; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+  .progress-bar-container { background: #e9ecef; border-radius: 10px; height: 10px; margin-bottom: 25px; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 0%; transition: width 0.4s ease; border-radius: 10px; }
+  .section-badge { display: inline-block; background: linear-gradient(135deg, var(--accent), #f0d97a); color: var(--primary); padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; margin: 18px 0 18px; }
+
+  .question-card { background: var(--card); border-radius: 18px; padding: 30px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); animation: slideIn 0.35s ease; }
+  .question-number { display: inline-block; background: var(--primary); color: #fff; width: 38px; height: 38px; border-radius: 50%; text-align: center; line-height: 38px; font-weight: bold; margin-left: 12px; }
+  .question-text { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 22px; line-height: 1.8; }
+  .options { display: flex; flex-direction: column; gap: 12px; }
+  .option { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border: 2px solid #e8ecf0; border-radius: 12px; cursor: pointer; transition: all 0.25s; background: #fafbfc; }
+  .option:hover { border-color: var(--primary-light); background: #f0f6ff; }
+  .option.selected { border-color: var(--primary-light); background: #e8f0fe; }
+  .option .opt-letter { width: 32px; height: 32px; border-radius: 50%; background: #e8ecf0; color: var(--text); display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 14px; flex-shrink: 0; }
+  .option.selected .opt-letter { background: var(--primary-light); color: #fff; }
+  .option .opt-text { font-size: 15px; line-height: 1.6; }
+
+  .nav-buttons { display: flex; justify-content: space-between; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
+  .btn { padding: 14px 35px; border: none; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+  .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26,58,92,0.35); }
+  .btn-secondary { background: #e8ecf0; color: var(--text); }
+  .btn-secondary:hover { background: #d5dce3; }
+  .btn-success { background: linear-gradient(135deg, #28a745, #34ce57); color: #fff; }
+  .btn-success:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(40,167,69,0.35); }
+  .btn-gold { background: linear-gradient(135deg, #d4af37, #f0d97a); color: #1a3a5c; }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(212,175,55,0.4); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* Navigation Grid */
+  .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 6px; margin: 15px 0; padding: 15px; background: var(--card); border-radius: 12px; }
+  .nav-grid button { padding: 8px; border: 2px solid #e0e0e0; background: #fff; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; transition: all 0.2s; }
+  .nav-grid button.answered { background: #d4edda; border-color: #28a745; color: #155724; }
+  .nav-grid button.current { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  /* ===== RESULT ===== */
+  #resultScreen { display: none; }
+  .result-card { background: var(--card); border-radius: 20px; padding: 45px; text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,0.1); margin-bottom: 25px; }
+  .result-circle { width: 160px; height: 160px; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto 25px; border: 8px solid; animation: scaleIn 0.6s ease; }
+  .result-circle.pass { border-color: var(--success); background: #e6f9ec; }
+  .result-circle.fail { border-color: var(--danger); background: #fdeaea; }
+  .result-circle .score { font-size: 48px; font-weight: bold; }
+  .result-circle.pass .score { color: var(--success); }
+  .result-circle.fail .score { color: var(--danger); }
+  .result-circle .out-of { font-size: 15px; color: #888; }
+  .result-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+  .result-title.pass { color: var(--success); }
+  .result-title.fail { color: var(--danger); }
+  .result-message { font-size: 15px; color: #666; margin-bottom: 25px; line-height: 1.8; }
+
+  .sections-summary { background: var(--card); border-radius: 18px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin-bottom: 25px; }
+  .sections-summary h3 { color: var(--primary); margin-bottom: 20px; font-size: 18px; }
+  .section-row { padding: 14px 18px; border-radius: 12px; margin-bottom: 10px; background: #f8f9fb; }
+  .section-row .name { font-weight: 600; font-size: 14px; }
+  .section-row .score-badge { padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; }
+  .score-badge.pass { background: #d4edda; color: #155724; }
+  .score-badge.fail { background: #f8d7da; color: #721c24; }
+  .section-bar { height: 6px; background: #e9ecef; border-radius: 3px; margin-top: 8px; overflow: hidden; }
+  .section-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+
+  .review-section { background: var(--card); border-radius: 18px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+  .review-section h3 { color: var(--primary); margin-bottom: 20px; font-size: 18px; }
+  .review-item { border: 1px solid #eee; border-radius: 14px; padding: 22px; margin-bottom: 16px; background: #fafbfc; }
+  .review-item .q-text { font-weight: 600; margin-bottom: 14px; line-height: 1.7; font-size: 15px; }
+  .review-answer { padding: 11px 16px; border-radius: 10px; margin-bottom: 8px; font-size: 14px; line-height: 1.6; }
+  .review-answer.your-wrong { background: #fdeaea; border-right: 4px solid var(--danger); }
+  .review-answer.correct-ans { background: #e6f9ec; border-right: 4px solid var(--success); }
+  .review-answer .label { font-weight: bold; font-size: 12px; display: block; margin-bottom: 3px; }
+  .review-answer.your-wrong .label { color: var(--danger); }
+  .review-answer.correct-ans .label { color: var(--success); }
+
+  .result-actions { display: flex; gap: 15px; justify-content: center; margin-top: 30px; flex-wrap: wrap; }
+
+  /* ===== MODAL ===== */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
+  .modal-overlay.show { display: flex; }
+  .modal-box { background: #fff; border-radius: 20px; padding: 35px; max-width: 500px; width: 100%; text-align: center; animation: fadeIn 0.3s ease; }
+  .modal-box h3 { color: var(--primary); margin-bottom: 15px; font-size: 20px; }
+  .modal-box p { color: #666; font-size: 14px; margin-bottom: 20px; line-height: 1.7; }
+  .modal-box input { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; text-align: center; margin-bottom: 15px; }
+  .modal-box input:focus { outline: none; border-color: var(--primary); }
+  .modal-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+
+  /* ===== CERTIFICATE ===== */
+  #certificateArea { display: none; margin-top: 30px; }
+  .certificate-frame { background: #fffef7; border: 12px double #d4af37; border-radius: 20px; padding: 50px 40px; text-align: center; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+  .certificate-frame::before { content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px; border: 2px solid #1a3a5c; border-radius: 12px; pointer-events: none; }
+  .certificate-frame .cert-ornament { font-size: 40px; color: #d4af37; margin-bottom: 10px; }
+  .certificate-frame h1 { color: #1a3a5c; font-size: 32px; margin-bottom: 5px; letter-spacing: 2px; }
+  .certificate-frame .cert-institute { color: #d4af37; font-size: 18px; font-weight: bold; margin-bottom: 25px; }
+  .certificate-frame .cert-subtitle { color: #666; font-size: 16px; margin-bottom: 30px; }
+  .certificate-frame .cert-name-line { font-size: 15px; color: #333; margin-bottom: 10px; }
+  .certificate-frame .cert-name { display: inline-block; padding: 8px 40px; border-bottom: 3px solid #1a3a5c; font-size: 26px; font-weight: bold; color: #1a3a5c; margin: 10px 0 25px; min-width: 300px; }
+  .certificate-frame .cert-body { font-size: 16px; color: #333; line-height: 2; margin-bottom: 25px; }
+  .certificate-frame .cert-exam { color: #1a3a5c; font-weight: bold; font-size: 17px; }
+  .certificate-frame .cert-grade { display: inline-block; background: linear-gradient(135deg, #d4af37, #f0d97a); color: #1a3a5c; padding: 10px 30px; border-radius: 30px; font-weight: bold; font-size: 18px; margin: 20px 0; }
+  .certificate-frame .cert-footer { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 2px dashed #d4af37; font-size: 14px; color: #666; }
+  .certificate-frame .cert-seal { display: inline-block; border: 4px solid #d4af37; border-radius: 50%; padding: 15px; color: #d4af37; font-weight: bold; font-size: 12px; position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: #fffef7; }
+  .certificate-frame .cert-seal .seal-text { text-align: center; line-height: 1.3; }
+  .certificate-frame .cert-ref { position: absolute; top: 25px; left: 30px; font-size: 11px; color: #999; }
+
+  /* ===== ANSWER KEY ===== */
+  #answerKeyArea { display: none; margin-top: 30px; }
+  .answer-key-header { text-align: center; padding: 30px; border-bottom: 3px double #1a3a5c; margin-bottom: 25px; }
+  .answer-key-header h1 { color: #1a3a5c; font-size: 24px; margin-bottom: 8px; }
+  .answer-key-header .ak-sub { color: #666; font-size: 14px; }
+  .answer-key-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+  .answer-key-table th, .answer-key-table td { border: 1px solid #ddd; padding: 12px; text-align: right; font-size: 13px; }
+  .answer-key-table th { background: #1a3a5c; color: #fff; font-weight: bold; }
+  .answer-key-table tr:nth-child(even) { background: #f8f9fb; }
+  .answer-key-table .q-num { font-weight: bold; color: #1a3a5c; text-align: center; width: 50px; }
+  .answer-key-table .answer-cell { background: #e6f9ec; font-weight: bold; color: #155724; text-align: center; width: 80px; }
+
+  /* ===== FOOTER ===== */
+  footer { background: var(--primary); color: #fff; padding: 25px; text-align: center; margin-top: auto; }
+  footer p { font-size: 13px; opacity: 0.85; margin-bottom: 5px; }
+  footer .accent { color: var(--accent); font-weight: bold; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes scaleIn { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  @media (max-width: 600px) {
+    header { padding: 14px 16px; }
+    header .designer-tag { display: none; }
+    main { padding: 16px; }
+    .question-card { padding: 20px; }
+    .result-card { padding: 28px; }
+    .exam-header { flex-direction: column; align-items: flex-start; }
+    .certificate-frame { padding: 30px 20px; }
+    .certificate-frame h1 { font-size: 22px; }
+    .certificate-frame .cert-name { font-size: 20px; min-width: auto; }
+  }
+
+  /* ===== PRINT ===== */
+  @media print {
+    body * { visibility: hidden; }
+    #printArea, #printArea * { visibility: visible; }
+    #printArea { position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0; }
+    header, footer, .modal-overlay { display: none !important; }
+    .no-print { display: none !important; }
+    .certificate-frame { box-shadow: none; page-break-inside: avoid; }
+    .answer-key-table { page-break-inside: auto; }
+    .answer-key-table tr { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="logo">M.A</div>
+    <h1>منصة M.A للتدريب المهني</h1>
+    <h2>الاختبارات القانونية الشاملة</h2>
+    <p style="font-size:13px;color:#888;margin-bottom:20px;">أدخل كلمة المرور للوصول إلى الاختبارات</p>
+    <input type="password" id="passwordInput" class="password-input" placeholder="••••••••" maxlength="20">
+    <button class="login-btn" onclick="checkPassword()">دخول</button>
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="designer-credit">
+      إعداد وتصميم: <strong style="color:var(--primary);">أ. مصطفى اكر</strong><br>
+      <span style="font-size:10px;">© جميع حقوق الابتكار والنشر محفوظة</span>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header id="mainHeader" style="display:none;">
+  <div class="brand">
+    <div class="logo-sm">M.A</div>
+    <div class="brand-text">
+      <h1>M.A للتدريب المهني</h1>
+      <p>إعداد وتصميم: أ. مصطفى اكر</p>
+    </div>
+  </div>
+  <div class="designer-tag">© حقوق النشر محفوظة</div>
+</header>
+
+<!-- MAIN -->
+<main id="mainContent" style="display:none;">
+
+  <div id="homeScreen">
+    <div class="welcome-section">
+      <h2>مرحباً بك في منصة M.A للتدريب المهني</h2>
+      <p>منصة متكاملة للاختبارات القانونية المؤتمتة. اختر الاختبار الذي ترغب به وابدأ رحلتك التدريبية.</p>
+      <div class="credit-line">إعداد وتصميم: أ. مصطفى اكر — جميع حقوق الابتكار والنشر محفوظة</div>
+    </div>
+    <div class="exams-grid" id="examsGrid"></div>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>
+        <h2 id="examTitle"></h2>
+        <div class="exam-credit">إعداد وتصميم: أ. مصطفى اكر</div>
+      </div>
+      <div class="timer-box" id="timerBox">⏱️ <span id="timerDisplay">00:00</span></div>
+    </div>
+    <div class="progress-bar-container"><div class="progress-bar" id="progressBar"></div></div>
+    <div id="navGrid" class="nav-grid no-print"></div>
+    <div id="sectionBadgeContainer"></div>
+    <div id="questionsContainer"></div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goHome()">← العودة للرئيسية</button>
+      <button class="btn btn-success" id="submitBtn" onclick="submitExam()">إنهاء وعرض النتيجة</button>
+    </div>
+  </div>
+
+  <div id="resultScreen">
+    <div class="result-card">
+      <div class="result-circle" id="resultCircle">
+        <div class="score" id="resultScore">0</div>
+        <div class="out-of">من 100</div>
+      </div>
+      <div class="result-title" id="resultTitle"></div>
+      <div class="result-message" id="resultMessage"></div>
+      <div class="designer-credit-result" style="font-size:13px;color:#aaa;margin-top:20px;padding-top:18px;border-top:1px dashed #ddd;">
+        إعداد وتصميم: <strong>أ. مصطفى اكر</strong> — جميع حقوق الابتكار والنشر محفوظة
+      </div>
+    </div>
+
+    <div class="sections-summary">
+      <h3>📊 النتيجة حسب الأقسام</h3>
+      <div id="sectionsSummary"></div>
+    </div>
+
+    <div class="review-section" id="reviewSection">
+      <h3>📝 مراجعة الأسئلة الخاطئة</h3>
+      <div id="reviewContainer"></div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn btn-gold" id="certBtn" onclick="requestCertificate()">🎓 الحصول على شهادة التدريب</button>
+      <button class="btn btn-primary" id="keyBtn" onclick="requestAnswerKey()">📋 طباعة سلم التصحيح</button>
+      <button class="btn btn-secondary" onclick="goHome()">🏠 الرئيسية</button>
+      <button class="btn btn-secondary" onclick="retryExam()">🔄 إعادة الاختبار</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer id="mainFooter" style="display:none;">
+  <p><span class="accent">M.A</span> للتدريب المهني — منصة الاختبارات القانونية المؤتمتة</p>
+  <p>إعداد وتصميم: <span class="accent">أ. مصطفى اكر</span> | جميع حقوق الابتكار والنشر محفوظة © 2026</p>
+</footer>
+
+<!-- MODAL: CODE -->
+<div class="modal-overlay" id="codeModal">
+  <div class="modal-box">
+    <h3 id="codeModalTitle">🔐 رمز التفعيل المطلوب</h3>
+    <p id="codeModalDesc">هذه الخدمة مدفوعة. أدخل الرمز السري للمتابعة.</p>
+    <input type="password" id="codeInput" placeholder="أدخل الرمز السري" maxlength="10" inputmode="numeric">
+    <div class="error-msg" id="codeError" style="min-height:20px;"></div>
+    <div class="modal-buttons">
+      <button class="btn btn-primary" onclick="verifyCode()">تأكيد</button>
+      <button class="btn btn-secondary" onclick="closeCodeModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: NAME INPUT -->
+<div class="modal-overlay" id="nameModal">
+  <div class="modal-box">
+    <h3>📝 بيانات المتدرب</h3>
+    <p>أدخل اسمك الثلاثي كما تريده أن يظهر في الشهادة</p>
+    <input type="text" id="traineeName" placeholder="الاسم الثلاثي" maxlength="60">
+    <div class="error-msg" id="nameError" style="min-height:20px;"></div>
+    <div class="modal-buttons">
+      <button class="btn btn-primary" onclick="confirmName()">متابعة</button>
+      <button class="btn btn-secondary" onclick="closeNameModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- CERTIFICATE AREA -->
+<div id="certificateArea">
+  <div class="certificate-frame" id="printCert">
+    <div class="cert-ref" id="certRef"></div>
+    <div class="cert-ornament">⚖️</div>
+    <h1>شهادة تدريب وتأهيل</h1>
+    <div class="cert-institute">معهد M.A للتدريب المهني</div>
+    <div class="cert-subtitle">— منصة الاختبارات القانونية المؤتمتة —</div>
+
+    <div class="cert-name-line">تشهد إدارة المعهد بأن السيد/السيدة</div>
+    <div class="cert-name" id="certName">—</div>
+
+    <div class="cert-body">
+      قد اجتاز بنجاح الاختبار القانوني المعنون:<br>
+      <span class="cert-exam" id="certExamTitle">—</span>
+    </div>
+
+    <div class="cert-grade" id="certGrade">—</div>
+
+    <div class="cert-body" style="font-size:14px;color:#666;">
+      بتقدير ممتاز، وذلك وفقاً لمعايير التقييم المعتمدة في المعهد<br>
+      (الدرجة النهائية: <span id="certScore">—</span> من 100)
+    </div>
+
+    <div class="cert-footer">
+      <div>📅 تاريخ الإصدار: <span id="certDate">—</span></div>
+      <div>🔢 الرقم المرجعي: <span id="certSerial">—</span></div>
+    </div>
+
+    <div class="cert-seal">
+      <div class="seal-text">
+        معهد M.A<br>للتدريب المهني<br>★ ختم معتمد ★
+      </div>
+    </div>
+  </div>
+  <div class="result-actions no-print">
+    <button class="btn btn-gold" onclick="printCertificate()">🖨️ طباعة الشهادة</button>
+    <button class="btn btn-secondary" onclick="hideCertificate()">إغلاق</button>
+  </div>
+</div>
+
+<!-- ANSWER KEY AREA -->
+<div id="answerKeyArea">
+  <div id="printKey">
+    <div class="answer-key-header">
+      <h1>📋 سلم التصحيح الرسمي</h1>
+      <div class="ak-sub">معهد M.A للتدريب المهني — منصة الاختبارات القانونية المؤتمتة</div>
+      <div class="ak-sub" style="margin-top:8px;" id="akExamTitle"></div>
+    </div>
+    <div id="akTableContainer"></div>
+    <div style="text-align:center;padding:20px;color:#666;font-size:12px;border-top:2px dashed #ddd;margin-top:20px;">
+      <p>📅 تاريخ الإصدار: <span id="akDate"></span> | 🔢 الرقم المرجعي: <span id="akRef"></span></p>
+      <p style="margin-top:8px;">هذا المستند سلم تصحيح رسمي معتمد للاستخدام المهني فقط</p>
+    </div>
+  </div>
+  <div class="result-actions no-print">
+    <button class="btn btn-primary" onclick="printAnswerKey()">🖨️ طباعة سلم التصحيح</button>
+    <button class="btn btn-secondary" onclick="hideAnswerKey()">إغلاق</button>
+  </div>
+</div>
+
+<!-- PRINT AREA (hidden, for printing) -->
+<div id="printArea" style="display:none;"></div>
+
+<script>
+/* ============================================================
+   M.A للتدريب المهني — إعداد وتصميم: أ. مصطفى اكر
+   ============================================================ */
+
+const PASSWORD = "20262026";
+const SECRET_CODE = "1987";     // كود التفعيل للخدمات المدفوعة (مخفي)
+const PASS_SCORE = 75;
+const MIN_PER_QUESTION = 0.9;   // 0.9 دقيقة لكل سؤال
+
+let currentExam = null;
+let currentQuestions = [];
+let userAnswers = [];
+let timerInterval = null;
+let timeLeft = 0;
+let lastResult = null;
+let pendingService = null;      // 'cert' | 'key'
+let traineeNameValue = "";
+
+/* ============================================================
+   بنك الأسئلة
+   ============================================================ */
+const questionBank = {
+  exam1: {
+    title: "قانون العقوبات العام 148/1949 والعقوبات الاقتصادية 3/2013",
+    sections: [
+      { name: "المبادئ العامة والصلاحية", questions: [
+        { q: "وفقاً لمبدأ الشرعية في المادة 1، إذا ارتكب شخص فعلاً لم يكن مجرماً وقت ارتكابه، ثم صدر قانون يجرمه لاحقاً، فما هو الحكم؟", o: ["يعاقب بالقانون الجديد لأنه أصبح مجرماً", "لا يعاقب لأن القانون لا يسري بأثر رجعي على الأفعال السابقة", "يعاقب بالعقوبة الأخف بين القانونين"], a: 1 },
+        { q: "صدر قانون جديد يزيل صفة الجرم عن فعل معين، وكان هناك محكوم عليه بعقوبة سالبة للحرية. ما هو الأثر القانوني لذلك؟", o: ["تستمر العقوبة حتى انقضاء مدتها", "تزول العقوبة وتنتهي آثارها فوراً", "تتحول العقوبة إلى غرامة مالية"], a: 1 },
+        { q: "ارتكب سوري جناية خارج سوريا، ثم عاد إليها. ما هو الشرط الأساسي لمحاكمته وفق القانون السوري؟", o: ["أن يكون قد فقد جنسيته السورية", "ألا يكون القضاء الأجنبي قد حكم عليه حكماً مبرماً واستوفى عقوبته", "أن تتم محاكمته غيابياً في الخارج فقط"], a: 1 },
+        { q: "ما هي القاعدة التي تطبق بموجبها التشريعة الجزائية السورية على جميع الجرائم المقترفة في الأرض السورية؟", o: ["الصلاحية الشخصية", "الصلاحية الإقليمية (المكانية)", "الصلاحية الشاملة"], a: 1 },
+        { q: "وفقاً للمادة 13، متى تُعتبر الجريمة مرتكبة في الأراضي السورية؟", o: ["إذا تم على الأرض السورية أحد العناصر المؤلفة للجريمة", "إذا حصلت النتيجة في الأرض السورية", "كل ما ذُكر صحيح"], a: 2 },
+        { q: "وفقاً للمادة 14، ما هي مسافة البحر الإقليمي التابع للأرض السورية لأجل تطبيق القانون الجزائي؟", o: ["12 كيلو متراً من الشاطئ", "20 كيلو متراً من الشاطئ ابتداءً من أدنى مستوى الجزر", "50 كيلو متراً من الشاطئ"], a: 1 },
+        { q: "وفقاً للمادة 15، متى تخضع الجريمة المرتكبة على متن مركبة هوائية أجنبية في الإقليم الجوي السوري للقانون السوري؟", o: ["إذا كان الفاعل أو المجني عليه سورياً", "إذا حطت المركبة الهوائية في سوريا بعد اقتراف الجريمة", "كل من (أ) و(ب) صحيحان"], a: 2 },
+        { q: "وفقاً للمادة 16، أي من الجرائم التالية لا يطبق عليها القانون السوري إذا ارتكبت خارج سوريا؟", o: ["جناية أو جنحة مخلّة بأمن الدولة", "تقليد خاتم الدولة", "سرقة عادية لمال فردي في الخارج"], a: 2 },
+        { q: "ما الفرق الجوهري بين 'مبدأ الشرعية' (المادة 1) ومبدأ 'عدم رجعية القانون' (المادة 2)؟", o: ["مبدأ الشرعية يعني عدم وجود جريمة بلا نص، أما عدم الرجعية فيتعلق بتطبيق القانون الأصلح للمتهم بأثر رجعي", "مبدأ الشرعية يعني تطبيق القانون بأثر رجعي، أما عدم الرجعية يعني عدم وجود جريمة بلا نص", "لا يوجد فرق بينهما"], a: 0 },
+        { q: "شخص ارتكب جناية قتل في سوريا ثم هرب وحُكم عليه في الخارج بالسجن المؤبد، ثم عاد إلى سوريا. هل يحاكم في سوريا؟", o: ["لا، لأنه حوكم في الخارج", "نعم، بشرط ألا يكون قد استوفى عقوبته أو سقطت عنه", "نعم، ولكن فقط إذا كانت الجريمة سياسية"], a: 1 }
+      ]},
+      { name: "العقوبات وأحكامها", questions: [
+        { q: "ما هي طبيعة عقوبة الاعتقال المقررة في المادة 37 من قانون العقوبات العام؟", o: ["عقوبة جنائية مانعة للحرية تُجرد من إلزامية التشغيل الشاق", "عقوبة جنحية بسيطة لا تتجاوز 3 سنوات", "عقوبة تكميلية تُنفذ في المنزل"], a: 0 },
+        { q: "وفقاً للمادة 17، أي من العقوبات التالية تُعد من العقوبات الجنائية العادية؟", o: ["الحبس مع التشغيل والحبس البسيط", "الإعدام، الأشغال الشاقة المؤبدة، الاعتقال المؤبد، الأشغال الشاقة المؤقتة، الاعتقال المؤقت", "التجريد المدني والإقامة الجبرية"], a: 1 },
+        { q: "وفقاً للمادة 18، ما هي العقوبات الجنائية السياسية؟", o: ["الإعدام والاعتقال", "الاعتقال المؤبد، الاعتقال المؤقت، الإقامة الجبرية، التجريد المدني", "الأشغال الشاقة المؤبدة والتجريد المدني"], a: 1 },
+        { q: "وفقاً للمادتين 39 و41، ما هي عقوبتا المخالفات؟", o: ["الحبس البسيط والغرامة", "الحبس التكديري والغرامة التكديرية", "التجريد المدني والحظر"], a: 1 },
+        { q: "وفقاً للمادة 44، إذا لم ينص القانون على حد خاص للأشغال الشاقة المؤقتة والاعتقال المؤقت، فما هو الحد الأدنى والأعلى؟", o: ["الأدنى سنة والأعلى 10 سنوات", "الأدنى ثلاث سنوات والأعلى خمس عشرة سنة", "الأدنى 5 سنوات والأعلى 20 سنة"], a: 1 },
+        { q: "وفقاً للمادة 49، أي من الآثار التالية يوجبها التجريد المدني؟", o: ["العزل والإقصاء من الوظائف والخدمات العامة", "الحرمان من حق الناخب أو المنتخب", "كل ما ذُكر صحيح"], a: 2 },
+        { q: "وفقاً للمادة 51، ما هي مدة الحبس في الجنح بوجه عام إذا لم ينص القانون على نص خاص؟", o: ["بين يوم و10 أيام", "تتراوح بين عشرة أيام وثلاث سنوات", "بين شهر وسنة"], a: 1 },
+        { q: "وفقاً للمادة 60، تتراوح مدة الحبس التكديري في المخالفات بين:", o: ["يوم وخمسة أيام", "يوم وعشرة أيام", "ثلاثة أيام وشهر"], a: 1 },
+        { q: "وفقاً للمادة 70، ما هي التدابير الاحترازية المانعة للحرية؟", o: ["الحظر والإخراج والحرمان", "الحجز في مأوى احترازي، العزلة، الحجز في دار التشغيل", "منع ارتياد الخمارات والحرية المراقبة"], a: 1 },
+        { q: "ما هي طبيعة عقوبة 'الأشغال الشاقة المؤقتة' في قانون العقوبات السوري؟", o: ["عقوبة جنائية تتضمن تشغيل المحكوم عليه في الأعمال الشاقة لمدة محددة", "عقوبة جنحية بسيطة لا تتجاوز 3 سنوات", "عقوبة تكميلية تُنفذ في المنزل"], a: 0 }
+      ]},
+      { name: "أحكام الجريمة والمسؤولية", questions: [
+        { q: "لكي يعتبر الفعل دفاعاً شرعياً عن النفس وفقاً للمادة 226، ما هو الشرط المتعلق بوسيلة الدفاع؟", o: ["أن يكون الفعل أشد جسامة من الخطر المُراد توقيه", "أن يكون الدفاع متناسباً مع الخطر، وألا يمكن دفع الخطر بوسيلة أخرى", "أن يرتكب الفعل بناءً على أمر شفاهي"], a: 1 },
+        { q: "ما هو الشرط الأساسي لاعتبار الفعل حالة ضرورة معفاة من العقاب وفقاً للمادة 228؟", o: ["أن يكون الفعل متناسباً مع الخطر وألا يكون على الفاعل واجب قانوني بمواجهته", "أن يكون الفعل أشد من الخطر المُراد توقيه", "أن يكون الفاعل قد تلقى تهديداً شفهياً"], a: 0 },
+        { q: "شخص ارتكب جريمة وهو في حالة سكر كامل غير اختياري وفقاً للمادة 230. ما هو الحكم القانوني؟", o: ["يُعاقب بنصف العقوبة المقررة", "يُعفى من العقاب وتتخذ بحقه التدابير الاحترازية المناسبة", "يُحكم عليه بالسجن مع التشغيل"], a: 1 },
+        { q: "من أقدم على ارتكاب جريمة وهو في حالة سكر اختياري كامل وفقاً للمادة 232. ما هي مسؤوليته؟", o: ["يُعفى من المسؤولية بالكامل", "يُعاقب كما لو كان قد ارتكب الفعل بحالة الوعي التام", "تُستبدل العقوبة بالغرامة فقط"], a: 1 },
+        { q: "وفقاً للمادة 199، متى يُعد الشروع في الجناية معاقباً عليه؟", o: ["إذا بدأ الفاعل بأفعال لا لبس فيها تؤدي إلى ارتكاب الجناية وتوقفت لسبب خارج عن إرادته", "إذا قام بمجرد التفكير في الجريمة", "إذا أعد العدة فقط"], a: 0 },
+        { q: "وفقاً للمادة 211، من يُعتبر فاعلاً للجريمة؟", o: ["من أبرز إلى الوجود العناصر التي تألف منها الجريمة أو ساهم مباشرة في تنفيذها", "من قدم تلوحاً للجاني", "من علم بالجريمة ولم يبلغ عنها"], a: 0 },
+        { q: "وفقاً للمادة 218، من يُعتبر متدخلاً في الجريمة؟", o: ["من أعطى إرشادات لارتكاب الجريمة أو ساعد الفاعل في الأعمال المجهزة", "من ساهم مباشرة في تنفيذ الجريمة", "من كان شريكاً أصلياً"], a: 0 },
+        { q: "وفقاً للمادة 188، متى تُعد الجريمة مقصودة وإن تجاوزت النتيجة قصد الفاعل؟", o: ["إذا كان الفاعل جاهلاً بالقانون", "إذا كان قد توقع حصول النتيجة قبل المخاطرة", "إذا وقعت الجريمة بسبب الإهمال"], a: 1 },
+        { q: "وفقاً للمادة 192، إذا تبيّن للقاضي أن الدافع للجريمة كان شريفاً، فما العقوبة البديلة للأشغال الشاقة المؤبدة؟", o: ["الإعدام", "الاعتقال المؤبد أو خمس عشرة سنة", "الحبس مع التشغيل"], a: 1 },
+        { q: "وفقاً للمادة 209، ما هي العقوبات التي يمكن الحكم بها على هيئات اعتبارية جزائياً؟", o: ["الأشغال الشاقة والسجن", "الغرامة والمصادرة ونشر الحكم", "التجريد المدني والإقامة الجبرية"], a: 1 }
+      ]},
+      { name: "الجرائم والعقوبات الخاصة", questions: [
+        { q: "ما هي العقوبة الأصلية المحددة لجريمة القتل المنصوص عليها في المادة 533؟", o: ["الإعدام", "الأشغال الشاقة من 15 إلى 20 سنة", "الحبس من 3 إلى 7 سنوات"], a: 1 },
+        { q: "متى تصبح عقوبة القتل العمد الإعدام وفقاً للمادة 534؟", o: ["إذا ارتكب القتل عن سبق إصرار أو على أحد أصول الفاعل أو لتسهيل جناية", "إذا وقع القتل على شخص مجهول الهوية", "إذا ارتكب القتل في مكان عام"], a: 0 },
+        { q: "إذا أدى الضرب أو الجرح إلى إعطال المجني عليه عن العمل مدة تزيد على 20 يوماً وفقاً للمادة 540، فما هي طبيعة الجريمة والعقوبة؟", o: ["مخالفة وعقوبتها غرامة تكميلية", "جنحة وعقوبتها الحبس حتى 3 سنوات والغرامة", "جناية وعقوبتها الأشغال الشاقة المؤقتة"], a: 2 },
+        { q: "متى تعتبر السرقة 'موصوفة' وتستوجب عقوبة الأشغال الشاقة المؤقتة وفقاً للمادة 621؟", o: ["إذا حصلت ليلاً ومن شخصين أو أكثر مع الكسر أو الخلع أو استعمال مفاتيح مصنعة", "إذا وقعت في نهار غير ساحل", "إذا وقعت على شيء يسير القيمة"], a: 0 },
+        { q: "ما هو التعريف القانوني للاحتيال وفقاً للمادة 641؟", o: ["استعمال القوة والتهديد", "استعمال الطرق الاحتيالية أو الاستعانة بشخص ثالث أو اتخاذ اسم كاذب لإيهام المجني عليه بالغلط", "أخذ المال جهاراً دون اعتراض"], a: 1 },
+        { q: "متى تتحقق جريمة إساءة الأمانة وفقاً للمادة 656؟", o: ["عندما يتم تصرف الفاعل بالمال على غير ما أودع أو سُلم له، أو بإنكاره أو إتلافه إضراراً بصاحبه", "عندما يأخذ المال بالقوة", "عندما يعيد المال في الموعد المحدد"], a: 0 },
+        { q: "وفقاً للمادة 260، كيف عرّفت قانون العقوبات السوري المؤامرة؟", o: ["اتفاق شخص واحد مع نفسه", "كل اتفاق تم بين شخصين أو أكثر على ارتكاب جناية بوسائل معينة", "التظاهر السلمي في الأماكن العامة"], a: 1 },
+        { q: "وفقاً للمادة 263، ما هي عقوبة كل سوري حمل السلاح على سورية في صفوف العدو؟", o: ["الأشغال الشاقة المؤقتة", "الإعدام", "الاعتقال المؤبد"], a: 1 },
+        { q: "وفقاً للمادة 341، ما هي عقوبة كل موظف عام يصنع سنداً رسمياً مكذوباً؟", o: ["الأشغال الشاقة المؤقتة خمس سنوات على الأقل", "الغرامة التكديرية", "الحبس أسبوعاً"], a: 0 },
+        { q: "وفقاً للمادة 536، ما هي عقوبة من سبب الموت بعنف أو ضرب دون أن يقصد القتل؟", o: ["الأشغال الشاقة سبع سنوات على الأقل", "الإعدام", "الحبس التكديري"], a: 0 }
+      ]},
+      { name: "قانون العقوبات الاقتصادي 3/2013", questions: [
+        { q: "وفقاً للمادة 1 من قانون العقوبات الاقتصادي، هل تُعتبر أموال الشركات المساهمة التي تساهم الدولة في رأس مالها 'مالاً عاماً'؟", o: ["نعم، تُعتبر مالاً عاماً في حكم هذا القانون", "لا، تُعتبر أموالاً خاصة", "فقط إذا كانت الشركة مساهمة عامة"], a: 0 },
+        { q: "موظف عام اختلس أموالاً عامة وُضعت تحت يده بمقتضى وظيفته وفقاً للمادة 2. ما هي العقوبة؟", o: ["الحبس البسيط من شهر إلى سنة", "الأشغال الشاقة المؤقتة من 5 إلى 15 سنة والغرامة", "الغرامة التكديرية فقط"], a: 1 },
+        { q: "ما هي عقوبة الموظف العام الذي يسبب ضرراً جسيماً للمال العام أو يسهل إلحاق ضرر به وفقاً للمادة 3؟", o: ["الإعتقال المؤبد", "الحبس من سنة إلى 3 سنوات والغرامة مع إلزامه بالتعويض", "التوبيخ الإداري فقط"], a: 1 },
+        { q: "ما هي العقوبة التي تُفرض على الموظف العام الذي يطلب أو يقبل عطية لأداء عمل يخل بواجبات وظيفته وفقاً للمادة 4؟", o: ["الأشغال الشاقة المؤقتة والغرامة وتضمين قيمة الرشوة", "الحبس التكديري لمدة 5 أيام", "خصم من الراتب فقط"], a: 0 },
+        { q: "ما هي عقوبة المتعهد أو المورد الذي يرتكب غشاً في تنفيذ عقود التوريد أو الأشغال وفقاً للمادة 5؟", o: ["يعاقب بالإعتقال أو الأشغال الشاقة المؤقتة، بالإضافة إلى عقوبات أخرى", "يعاقب بالغرامة فقط", "يُعفى من العقوبة إذا أعاد التنفيذ"], a: 0 },
+        { q: "ما هي عقوبة تهريب الأموال الأجنبية والعملات الأجنبية على عدم إرجاع حصائل التصدير للخزينة وفقاً للمادة 7؟", o: ["الحبس والغرامة المالية المضاعفة بقدر القيمة المهربة مع مصادرة المواد والعملات", "الإعفاء من أي عقوبة مالية", "إغلاق محل لساعة واحدة"], a: 0 },
+        { q: "في الجرائم الاقتصادية التي تمس المال العام، إذا توفي المتهم أو المحكوم عليه، هل يسقط حق الدولة في استرداد الأموال المختلسة وفقاً للمادة 10؟", o: ["نعم، يسقط الحق بالكامل بالوفاة", "لا يسقط، بل ينفذ على تركته وأموال الشركاء المتضامنين", "يتحول الحق إلى دين عادي يسقط بالتقادم القصير"], a: 1 },
+        { q: "ما هو الشرط الأساسي الذي وضعه المشرع للحصول على إعفاء من العقوبة في جرائم الاقتصاد وفقاً للمادة 12؟", o: ["قيام الفاعل برد الأموال المختلسة كاملة أو إعادة الأشياء أو إيقاف التنفيذ", "قيام الفاعل بتقديم اعتذار رسمي", "دفع غرامة تكديرية فقط"], a: 0 },
+        { q: "في جريمة اقتصادية اشترك فيها عدة أشخاص، هل يسأل كل منهم عن كامل المبلغ المختلس أم عن نصيبه فقط؟", o: ["يسأل كل منهم عن نصيبه فقط", "يسأل كل منهم عن كامل المبلغ لأن المسؤولية تضامنية", "لا يسأل أي منهم إذا توفي أحدهم"], a: 1 },
+        { q: "ما هي الحكمة التشريعية من منح الإعفاء من العقوبة في جرائم الاقتصاد (المادة 12)؟", o: ["تشجيع الفاعل على إعادة الأموال المختلسة إلى الخزينة العامة", "تقليل عدد السجناء في السجون", "تسريع إجراءات المحاكمة"], a: 0 }
+      ]}
+    ]
+  },
+  exam2: {
+    title: "المسؤولية الجزائية والمسؤولية المسلكية",
+    sections: [
+      { name: "المدخل إلى القانون الجنائي والإداري", questions: [
+        { q: "وفقاً للتعريف القانوني الوضعي للجريمة، ما هو العنصر الأساسي الذي يميزها عن المخالفة الإدارية؟", o: ["أن يكون الفعل مخالفاً للآداب العامة", "أن يكون الفعل جريمة يعاقب عليها القانون بعقوبة جزائية", "أن يكون الفعل صادراً عن موظف عام"], a: 1 },
+        { q: "كيف عرّف الفقه الإسلامي الجريمة؟", o: ["كل فعل أو امتناع عن فعل يجرمه القانون ويقرر له عقوبة", "محظورات شرعية زجر الله عنها بحد أو تعزير", "كل إخلال بالتزامات العقد بين الفرد والدولة"], a: 1 },
+        { q: "كيف عرّف جان جاك روسو الجريمة من منظور المدرسة الاجتماعية للعدالة؟", o: ["اعتداء مباشر على الذات الإلهية فقط", "الفعل الذي يقصم عرى العقد الاجتماعي", "السلوك الإيجابي العمدي دون السلبي"], a: 1 },
+        { q: "ما هو الهدف المباشر والأساسي للعقوبة الجنائية المقررة للجريمة؟", o: ["تحصيل الإيرادات المالية للخزينة العامة", "تحقيق الردع العام والخاص وزجر الجرم وتحقيق العدالة", "إصلاح المباني والمؤسسات المتضررة من الجريمة"], a: 1 },
+        { q: "كيف تختلف المخالفة الإدارية عن الجريمة الجزائية من حيث الهدف من عقوبتها؟", o: ["تهدف إلى سلب حرية الموظف لمدة طويلة", "تهدف إلى فرض الانضباط الوظيفي والالتزام بالقواعد المنظمة للنشاط الإداري", "تهدف إلى القضاء النهائي على السجل العدلي للمواطن"], a: 1 }
+      ]},
+      { name: "أركان الجريمة والمسؤولية الجزائية", questions: [
+        { q: "موظف في قسم المحاسبة قام بتزوير سندات صرف والاستيلاء على مبلغ 500,000 ل.س. كيف يكيّف هذا السلوك قانوناً؟", o: ["مخالفة إدارية مسلكية فقط", "جريمة جزائية (تزوير واختلاس) ومخالفة إدارية في آن واحد", "فعل مباح لا يخضع لأي مساءلة"], a: 1 },
+        { q: "في قضية الموظف الذي قام بالتزوير والاختلاس، ما هي الجهات المختصة بالنظر والتحقيق في شأنه؟", o: ["القضاء الجزائي للمسؤولية الجزائية، ولجنة تأديبية/إدارية للمسؤولية المسلكية", "محكمة السير والمرور فقط", "النقابة المهنية المنتسب إليها فقط"], a: 0 },
+        { q: "ما هو المقصود بالركن الشرعي (القانوني) للجريمة؟", o: ["توفير المبلغ المالي المطلوب للتعويض", "خضوع الفعل لنص تجريم صريح يسلب عنه صفة عدم المشروعية (مبدأ الشرعية)", "حضور القاضي شخصياً في موقع وقوع الجرم"], a: 1 },
+        { q: "يتكون الركن المادي للجريمة التامة من ثلاثة عناصر متكاملة، ما هي؟", o: ["الشرعية، الدافع، والسجل العدلي", "السلوك الإجرامي، النتيجة الإجرامية، وعلاقة السببية بينهما", "النية، القصد الخاص، والعفو القضائي"], a: 1 },
+        { q: "أي من الصور التالية يُعتبر مثالاً على 'السلوك السلبي' (الامتناع) للركن المادي؟", o: ["إطلاق النار من مسدس باتجاه المجني عليه", "امتناع حارس السجن عن القيام بواجبه مما سبب وفاة أو فرار السجين", "كسر الباب الخارجي للمنزل لسرقته"], a: 1 },
+        { q: "كيف عرّف المشرع السوري 'الشروع' في المادة 199 من قانون العقوبات؟", o: ["كل التفكير والتدبير الداخلي دون القيام بأي عمل مادي", "كل محاولة لارتكاب جناية بدأت بأفعال ترمي مباشرة إلى اقترافها إذا لم تتم إلا لسبب خارج عن إرادة الفاعل", "كل عدول اختياري وطوعي يقوم به الجاني"], a: 1 },
+        { q: "ما هي تسمية 'الشروع الناقص' في الفقه والقضاء الجزائي؟", o: ["الجريمة الخائبة", "الجريمة الموقوفة (أو الشروع البسيط) حيث يتوقف الفاعل قبل استكمال كل الأفعال التنفيذية", "الجريمة المستحيلة"], a: 1 },
+        { q: "قام الجاني باستكمال جميع الأفعال اللازمة للقتل، لكن النتيجة لم تتحقق لسبب خارجي (كعلاج طبي سريع). ما وصف هذا الشروع؟", o: ["شروع ناقص / جريمة موقوفة", "شروع تام (الجريمة الخائبة)", "عدول طوعي اختياري"], a: 1 },
+        { q: "إذا عدل الجاني بمحض إرادته عن إتمام الجريمة قبل تحقيق النتيجة، فما هو موقفه من العقاب؟", o: ["يعاقب على الشروع في هذه الجريمة", "لا يعاقب على الشروع في هذه الجريمة، ولكنه يعاقب على الأفعال المرتكبة إذا كانت تشكل بذاتها جرائم مستقلة", "تفرض عليه العقوبة الجنحية دائماً"], a: 1 },
+        { q: "ما هي 'الجريمة المستحيلة' حسب اجتهاد محكمة النقض المطلق للمادة 202؟", o: ["الجريمة التي لا يمكن للقاضي فهمها", "حالة من حالات الشروع أو صورة للجريمة الخائبة يعاقب فاعلها بمثل عقوبة الشروع ما لم يأت فعله عن غير فهم أو ظن خطأ بإباحة الفعل", "جرم يرتكب في كوكب آخر"], a: 1 }
+      ]},
+      { name: "الركن المعنوي والقصد", questions: [
+        { q: "يتكون الركن المعنوي للجريمة أساساً من عنصرين جوهريين في القصد الجنائي، هما:", o: ["الخوف والتردد", "العلم والإرادة", "الكتابة والشهود"], a: 1 },
+        { q: "ما هي إحدى الحالات الاستثنائية التي يجهل فيها الجهل بالقانون وفقاً للمادة 222 من قانون العقوبات السوري؟", o: ["الجهل بقانون جديد إذا اقترف الجرم خلال الأيام الثلاثة التي تلت نشره", "إذا ادعى الجاني أنه لم يقرأ الجريدة الرسمية طوال حياته", "إذا وقع الجرم في أيام العطل الرسمية"], a: 0 },
+        { q: "ما هو الفرق الجوهري بين 'القصد' و'الدافع' في الجريمة؟", o: ["القصد هو السبب المالي، بينما الدافع هو النية الشرعية", "القصد هو توجيه العلم والإرادة للفعل والنتيجة، أما الدافع فهو العلة أو العامل النفسي الداخلي المحرك للإرادة", "القصد متغير دائماً والدافع ثابت في كل الجرائم"], a: 1 },
+        { q: "وفقاً للمادة 192 من قانون العقوبات السوري، متى يُعفى الفاعل أو يُخفف عنه العقاب استناداً للدافع؟", o: ["إذا كان الدافع شريفاً", "إذا كان الدافع هو الكسب المالي المشروع", "إذا كان الدافع دنيئاً وشريفاً"], a: 0 },
+        { q: "ما هو المقصود بـ 'القصد الاحتمالي' وفقاً لنص المادة 188 من قانون العقوبات السوري؟", o: ["أن يكون الفاعل متأكداً 100% من عدم حدوث النتيجة", "توقع الفاعل حصول النتيجة الجرمية كافية محتملة لفعله أو امتناعه قبل المخاطرة واستمر في سلوكه", "أن ترتكب الجريمة نتيجة غيبوبة مرضية"], a: 1 },
+        { q: "ما المقصود بـ 'سبق الإصرار' (العمد) بالمقارنة مع القصد البسيط؟", o: ["الارتكاب الفوري تحت تأثير الغضب الحاد المفاجئ", "النية الجرمية والتصميم المسبق المنعقد في حالة استقرار النفس وهدوء البال والتفكير المتأني قبل التنفيذ", "الخطأ الذي يرتكبه السائق المسرع"], a: 1 },
+        { q: "ما هي الصور الثلاث الأساسية للخطأ الجزائي في الجريمة غير المقصودة وفقاً للمادتين (189) و(190)؟", o: ["الرشوة، الاختلاس، والتزوير", "الإهمال، قلة الاحتراز، وعدم مراعاة الشرائع والأنظمة", "السرقة، الذم، والتهديد"], a: 1 },
+        { q: "ما هو المعيار الذي يتبعه غالبية الفقهاء والقضاء لقياس درجة الخطأ والحيطة والحذر؟", o: ["معيار الشخص الفائق الذكاء والحيطة", "المعيار الموضوعي وهو سلوك 'الشخص المعتاد' متى وضع في نفس الظروف الخارجية للفاعل", "معيار الفاعل نفسه وفق مزاجه الشخصي"], a: 1 },
+        { q: "في الجرائم غير المقصودة المترتبة على عدم مراعاة الشرائع والأنظمة، هل يشترط إثبات قصد إلحاق الضرر بالغير لمساءلة الفاعل؟", o: ["نعم، يجب إثبات نية القتل العمد دائماً", "لا، تقوم المسؤولية بمجرد ارتكاب المخالفة ومخالفة النصوص التنظيمية دون حاجة لإثبات الإهمال أو القصد", "يشترط موافقة الوزير المختص أولاً"], a: 1 },
+        { q: "ما هو التعريف الدقيق للمسؤولية الجزائية؟", o: ["التزام الشخص بدفع الضرائب المستحقة للبلدية", "التزام شخص طبيعي مدرك بالخضوع لعقوبة أو تدبير احترازي نتيجة ارتكابه فعلاً مجرماً بموجب النص الجزائي", "التزام المؤسسة بدفع أجور العمال المسرحين"], a: 1 }
+      ]},
+      { name: "المسؤولية المسلكية والتطبيقات القضائية", questions: [
+        { q: "ما هي الأهلية الجنائية المطلوبة لقيام المسؤولية الجزائية لدى الفرد؟", o: ["امتلاك الفرد لثروة مالية كبيرة", "أن يكون الجاني مدركاً ومميزاً وحر الإرادة غير مصاب بعاهة عقلية تسلب حرية الاختيار", "حصول الفرد على الشهادة الجامعية"], a: 1 },
+        { q: "ينص القانون الجزائي السوري على مبدأ جوهري يقضي بأن 'المسؤولية الجزائية شخصية'. ما معنى هذا المبدأ؟", o: ["يجوز حبس والد الجاني بدلاً عنه", "لا يتحمل العقوبة الجزائية إلا من ارتكب الجريمة أو ساهم فيها، ولا تنتقل العقوبة إلى الورثة أو الأقارب", "تنتقل العقوبة المالية والسجن إلى الأبناء تلقائياً"], a: 1 },
+        { q: "ما هو الحكم القانوني السنوي بالنسبة للصغير الذي لم يتم العاشرة من عمره في قانون العقوبات السوري؟", o: ["تفرض عليه عقوبة الأشغال الشاقة", "يعدُّ عدم قيام المسؤولية الجزائية عليه تماماً (غير ملاحق جزائياً)", "يحكم عليه بالحبس الجنحي لمدة سنتين"], a: 1 },
+        { q: "أي من العقوبات التالية تُعتبر عقوبة 'تبعية' أو 'تكميلية' في القانون الجزائي السوري؟", o: ["الإعدام", "الحرمان من الحقوق المدنية والسياسية أو مراقبة الشرطة والمصادرة", "الأشغال الشاقة المؤقتة"], a: 1 },
+        { q: "وفقاً للمادة 307 من قانون العقوبات، من هو 'الموظف العام' في معرض تطبيق أحكام قانون العقوبات؟", o: ["كل شخص يعمل في دكانه الخاص", "كل مكلف بخدمة عامة في الإدارة أو المؤسسات أو القضاء، بالإضافة للمحكمين والخبراء والمصفين والمجالس المحلية", "سائق سيارة التاكسي الخاص فقط"], a: 1 }
+      ]}
+    ]
+  },
+  exam3: {
+    title: "قانون البينات السوري 359/1947",
+    sections: [
+      { name: "أحكام عامة وتقسيم البينات", questions: [
+        { q: "وفقاً للمادة 1 من قانون البينات، تنقسم البينات إلى:", o: ["الأدلة الكتابية، الشهادة، القرائن، الإقرار، اليمين، المعاينة والخبرة", "الأدلة الكتابية، الشهادة، الإقرار فقط", "الشهادة، القرائن، اليمين فقط"], a: 0 },
+        { q: "وفقاً للمادة 2 من قانون البينات، هل يجوز للقاضي أن يحكم بعلمه الشخصي؟", o: ["نعم، في جميع الأحوال", "نعم، إذا كانت الواقعة مشهورة", "لا، ليس للقاضي أن يحكم بعلمه الشخصي"], a: 2 },
+        { q: "وفقاً للمادة 3، يجب أن تكون الوقائع التي يراد إثباتها:", o: ["متعلقة بالدعوى فقط", "منتجة في الإثبات وجائز قبولها", "متعلقة بالدعوى ومنتجة في الإثبات وجائز قبولها"], a: 2 },
+        { q: "وفقاً للمادة 4، الأدلة الكتابية هي:", o: ["الأسناد الرسمية فقط", "الأسناد الرسمية، الأسناد العادية، الأوراق غير الموقعة", "الأسناد العادية فقط"], a: 1 },
+        { q: "وفقاً للمادة 5، الأسناد الرسمية هي التي يثبت فيها:", o: ["موظف عام أو شخص مكلف بخدمة عامة ما تم على يديه أو تلقاه من ذوي الشأن", "أي شخص عادي", "التاجر فقط"], a: 0 },
+        { q: "وفقاً للمادة 6، تكون الأسناد الرسمية حجة على:", o: ["الناس كافة", "ذوي الشأن فقط", "الموظف العام فقط"], a: 0 },
+        { q: "وفقاً للمادة 9، السند العادي هو الذي يشتمل على:", o: ["توقيع من صدر عنه أو خاتمه أو بصمة إصبعه", "توقيع الموظف العام فقط", "خاتم الدائرة الرسمية فقط"], a: 0 },
+        { q: "وفقاً للمادة 10، إذا احتج على شخص بسند عادي وكان لا يريد الاعتراف به، فماذا يتوجب عليه؟", o: ["يكفيه أن يلتزم الصمت", "يجب عليه أن ينكر صراحة ما هو منسوب إليه من خط أو توقيع أو خاتم أو بصمة إصبع، وإلا فهو حجة عليه", "يجب عليه أن يدعي بالتزوير مباشرة"], a: 1 },
+        { q: "وفقاً للمادة 11، متى يكون للسند العادي تاريخ ثابت في مواجهة الغير؟", o: ["بمجرد كتابة التاريخ عليه", "من يوم المصادقة عليه لدى كاتب العدل، أو إثبات مضمونه في ورقة ثابتة التاريخ، أو التأشير عليه من موظف مختص، أو وفاة/عجز أحد موقعيه، أو وقوع حادث قاطع", "لا يصبح ثابتاً إلا بحكم قضائي قطعي"], a: 1 },
+        { q: "وفقاً للمادة 12، ما هي قوة الرسائل والبرقيات في الإثبات؟", o: ["تكون للرسائل قوة الأسناد العادية ما لم يثبت موقعهما عدم إرسالها، وللبرقيات نفس القوة إذا كان أصلها المودع بالبريد موقعاً من مرسلها", "لا قيمة إثباتية لها في المواد المدنية", "تعتبر أسناداً رسمية حتمية"], a: 0 }
+      ]},
+      { name: "الأدلة الكتابية والدفاتر التجارية", questions: [
+        { q: "وفقاً للمادة 13، السند المؤيد لسند سابق يكون:", o: ["حجة على المدين، ولكن يجوز له أن يثبت خطأ هذا السند بتقديم السند الأصلي", "حجة مطلقة لا يجوز الطعن فيها", "باطلاً دائماً"], a: 0 },
+        { q: "وفقاً للمادة 14، دفاتر التجار:", o: ["تكون حجة على غير التجار", "لا تكون حجة على غير التجار، إلا أن البيانات الواردة فيها عما وردّد التجار تصلح أساساً يجيز للمحكمة أن توجه اليمين المتممة لأي من الطرفين", "تكون حجة على التجار وغير التجار"], a: 1 },
+        { q: "وفقاً للمادة 15، دفاتر التجار الإجبارية تكون حجة:", o: ["على صاحبها فقط", "لصاحبها فقط", "على صاحبها سواء كانت منتظمة أم لم تكن، ولصاحبها في المعاملات المختصة بتجارته إذا كانت منتظمة والخلاف بينه وبين تاجر"], a: 2 },
+        { q: "وفقاً للمادة 16، إذا تباينت القيود بين دفاتر منتظمة لتاجرين، فما السلطة الممنوحة للقاضي؟", o: ["إسقاط الدفترين فوراً واللجوء للشهادة", "يجوز للقاضي أن يقرر إما إهدار البينتين المتعارضتين أو الأخذ بإحداهما دون الأخرى على ما يظهر له من الظروف", "ترجيح دفتر المدعي دائماً"], a: 1 },
+        { q: "وفقاً للمادة 17، يجوز للقاضي في الدعوى بين التجار أن يقبل أو يرد البينة المستخلصة من:", o: ["الدفاتر التجارية غير الإجبارية فقط", "الدفاتر التجارية الإجبارية غير المنتظمة فقط", "الدفاتر التجارية غير الإجبارية، أو الدفاتر التجارية الإجبارية غير المنتظمة، حسب ظروف القضية"], a: 2 },
+        { q: "وفقاً للمادة 18، الدفاتر والأوراق المنزلية:", o: ["تكون حجة لمن صدرت عنه دائماً", "لا تكون حجة لمن صدرت عنه، ولكنها تكون حجة عليه إذا ذكر فيها صراحة أنه استوفى ديناً أو قصد بها أن تقوم مقام السند", "لا قيمة لها مطلقاً"], a: 1 },
+        { q: "وفقاً للمادة 19، متى يجوز للخصم أن يطلب إلزام خصمه بتقديم الأسناد أو الأوراق المنتجة في الدعوى التي تحت يده؟", o: ["إذا أراد تعجيز الخصم في الدعوى فقط", "إذا كان القانون المدني أو التجاري يجيز مطالبته بتقديمها، أو كانت مشتركة بينهما، أو استند إليها خصمه في أية مرحلة من مراحل الدعوى", "يجوز الطلب بدون أي شروط أو بيانات"], a: 1 },
+        { q: "وفقاً للمادة 21، يجب أن يبين في طلب إلزام الخصم بتقديم السند تحت طائلة الرد:", o: ["أوصاف السند فقط", "أوصاف السند، فحواه، الواقعة المستشهد بها، الدلائل على أنه تحت يد الخصم، وجه إلزام الخصم بتقديمه", "قيمة السند فقط"], a: 1 },
+        { q: "وفقاً للمادة 22، إذا أنكر الخصم وجود السند ولم يقدم الطالب إثباتاً كافياً، فما الإجراء؟", o: ["ترد الدعوى فوراً", "يجب أن يحلف المنكر يميناً بأن الورقة أو السند لا وجود له وأنه لا يعلم وجوده ولا مكانه وأنه لم يخفه أو يهمل البحث عنه", "تحكم المحكمة بثبوت مضمون الورقة مباشرة"], a: 1 },
+        { q: "وفقاً للمادة 23، إذا امتنع الخصم عن تقديم الورقة في الموعد أو امتنع عن حلف اليمين، فما الأثر القانوني؟", o: ["تسقط الدعوى كلياً", "اعتبرت الصورة التي قدمها خصمه صحيحة مطابقة لأصلها، وإن لم يقدم صورة جاز الأخذ بقوله شكلاً وموضوعاً", "يعاقب الخصم بالحبس لمدة شهر"], a: 1 }
+      ]},
+      { name: "إنكار الخط والتزوير", questions: [
+        { q: "وفقاً للمادة 24، هل يجوز للخصم سحب سند قدمه للاستدلال به في الدعوى؟", o: ["نعم، في أي وقت يشاء دون إذن", "لا يجوز له سحبه إلا برضاء خصمه وبإذن خطي من رئيس المحكمة بعد حفظ صورة مصدقة عنه في الإضبارة", "لا يجوز سحبه مطلقاً حتى لو وافق الخصم والرئيس"], a: 1 },
+        { q: "وفقاً للمادة 27، على ما ينصب إنكار الخط أو الخاتم أو التوقيع أو البصمة، وعلى ما ينصب ادعاء التزوير؟", o: ["ينصب الإنكار والادعاء بالتزوير على الأسناد الرسمية فقط", "ينصب إنكار الخط على الأوراق غير الرسمية، أما ادعاء التزوير فيتوجه على الأوراق الرسمية وغير الرسمية", "ينصب إنكار الخط على الأسناد الرسمية والتزوير على العادية"], a: 1 },
+        { q: "وفقاً للمادة 28، إذا أنكر الخصم التوقيع أو الخط وكانت الأوراق غير كافية لتكوين عقيدة المحكمة، فماذا تأمر المحكمة؟", o: ["تأمر بإلغاء السند فوراً", "تأمر بإجراء التطبيق (المضاهاة) تحت إشراف أحد قضاتها بواسطة خبير واحد أو ثلاثة خبراء", "تحيل القضية إلى محكمة الجنايات فوراً"], a: 1 },
+        { q: "وفقاً للمادة 36، ما هي الدعوى الأصلية لتحقيق الخطوط والتواقيع المنصوص عليها في المادة 39؟", o: ["هي دعوى يرفعها من بيده سند عادي لخصام من ينسب إليه ليقر بتوقيعه ولو كان الالتزام غير مستحق الأداء", "هي دعوى ترفع بعد تنفيذ السند جبراً", "هي دعوى غير مقبولة في القانون السوري"], a: 0 },
+        { q: "وفقاً للمادة 40، كيف يتم الادعاء بالتزوير الفرعي أثناء نظر الدعوى؟", o: ["شفاهاً في أي وقت بدون بيانات", "باستدعاء أو لائحة تقدم للمحكمة تحدد فيها كل مواضع التزوير المدعى به، وإلا كان باطلاً", "ببرقية ترسل لرئيس المحكمة"], a: 1 },
+        { q: "وفقاً للمادة 46، ما هو أثر القرار الصادر بالتحقيق في التزوير؟", o: ["ينهي الدعوى المدنية نهائياً", "يوقف العمل بالورقة أو السند المدعى بتزويره إلى أن يفصل في موضوع التزوير دون إخلال بالإجراءات الاحتياطية", "يلزم الخصم بدفع قيمة السند فوراً"], a: 1 },
+        { q: "وفقاً للمادة 47، إذا حكم بسقوط حق مدعي التزوير أو برفضه، فما هي الغرامة المالية؟", o: ["غرامة نقدية من 100 إلى 250 ليرة سورية دون إخلال بالتعويض، ولا يحكم بشيء إذا ثبت بعض ادعائه", "غرامة قدرها 500 ليرة حتماً", "لا توجد أي غرامة مقررة قانوناً"], a: 0 },
+        { q: "إذا توفي الموظف العام الذي حرر سنداً رسمياً، ثم أراد خصمه الطعن في صحة هذا السند، فما الإجراء الصحيح؟", o: ["يجب الطعن بالتزوير حصراً لأن السند رسمي", "يجب إنكار الخط أو التوقيع لأن السند رسمي", "لا يمكن الطعن فيه مطلقاً بعد وفاة الموظف"], a: 0 },
+        { q: "إذا حكمت المحكمة الجزائية بالبراءة في دعوى تزوير، فهل يمنع ذلك الخصوم في النزاع المدني من الادعاء بتزوير السند؟", o: ["نعم، لأن الحكم الجزائي بالبراءة حجة قاطعة", "لا، إذا كان الحكم الجزائي بالبراءة لا يقضي بصحة السند", "نعم، إذا كان الحكم الجزائي قد فصل في صحة السند"], a: 1 },
+        { q: "ما القيمة القانونية للصورة الخطية أو الفوتوغرافية المأخوذة عن الصورة الثانية (أي صورة عن صورة) للسند الرسمي؟", o: ["لها قوة الأصل تماماً", "يمكن الاستئناس بها تبعاً للظروف", "لا قيمة لها مطلقاً"], a: 1 }
+      ]},
+      { name: "الشهادة والشهود", questions: [
+        { q: "وفقاً للمادة 52 و54، ما هي القاعدة العامة في إثبات الالتزامات التعاقدية وغير التعاقدية بشهادة الشهود؟", o: ["تمنع الشهادة في كل الالتزامات دون استثناء", "تجوز الشهادة في الالتزامات غير التعاقدية والتجارية، وفي المدنية التعاقدية التي لا تزيد قيمتها على 500 ليرة وقت تمام العقد", "تجوز الشهادة في الالتزامات التعاقدية حتى مليون ليرة"], a: 1 },
+        { q: "وفقاً للمادة 55، هل يجوز الإثبات بالشهادة في الالتزامات التعاقدية حتى لو كان المطلوب لا يزيد على 500 ليرة؟", o: ["يجوز دائماً دون قيود", "لا يجوز فيما يخالف أو يجاور ما اشتمل عليه دليل كتابي، أو إذا كان المطلوب هو الباقي من حق تزيد قيمته على 500 ليرة، أو إذا عدل طلبه لأقل من ذلك", "يجوز بشهادة شاهد واحد فقط"], a: 1 },
+        { q: "وفقاً للمادة 56، ما هو مبدأ الثبوت بالكتابة الذي يبيح الإثبات بالشهادة ولو زادت قيمة الالتزام التعاقدي على 500 ليرة؟", o: ["هو كل سند رسمي موثق لدى كاتب العدل", "هو كل كتابة تصدر عن الخصم ويكون من شأنها أن تجعل وجود العقد المدعى به قريب الاحتمال", "هو ورقة صادرة عن الشاهد قبل شهادته"], a: 1 },
+        { q: "وفقاً للمادة 57، ما هي الحالات الاستثنائية التي يجوز فيها الإثبات بالشهادة في الالتزامات التعاقدية مهما بلغت قيمتها؟", o: ["إذا أقر الخصم بالالتزام شفاهة", "وجود مانع مادي أو أدبي، فقد السند المكتوب لسبب لا يد للدائن فيه، الطعن في العقد بأنه ممنوع بالقانون أو مخالف للنظام العام أو الآداب", "إذا كان المتعاقدان تاجرين فقط"], a: 1 },
+        { q: "وفقاً للمادة 59، من هم الأشخاص غير الأهل لأداء الشهادة؟", o: ["من لم يبلغ 21 سنة مطلقاً", "من لم تبلغ سنه 15 سنة، غير سليم الإدراك، المحكوم عليه بعقوبة تسقط أهلية الشهادة، ويجوز سماع من لم يبلغ 15 سنة بغير يمين على سبيل الاستدلال", "الأقارب حتى الدرجة الرابعة حتماً"], a: 1 },
+        { q: "وفقاً للمادة 60، هل تقبل شهادة الأصول للفروع والفروع للأصل أو شهادة أحد الزوجين للآخر؟", o: ["تقبل دائماً مع اليمين", "تقبل إذا لم يعترض الخصم", "لا تقبل شهادة الأصل للفرع ولا الفرع للأصل ولا أحد الزوجين ولو بعد انحلال الزوجية"], a: 2 },
+        { q: "وفقاً للمادة 61، هل يجوز لشخص أن يكون شاهداً ومدعياً في نفس الوقت؟", o: ["نعم، يجوز في المواد التجارية", "لا، ليس لأحد أن يكون شاهداً ومدعياً، فلا تصح شهادة الوصي لليتيم ولا الوكيل لموكله ولا الشريك فيما يتعلق بالشركة ولا الكفيل لالتزامات مكفوله", "تصح شهادة الوكيل لموكله دائماً"], a: 1 },
+        { q: "وفقاً للمادة 68، ما هي الحدود القصوى لعدد الشهود الذين يجوز استدعاؤهم للواقعة الواحدة؟", o: ["شاهدان فقط", "ثلاثة شهود", "لا يتجاوز عددهم الخمسة في الواقعة الواحدة، إلا إذا أجازت المحكمة ذلك"], a: 2 },
+        { q: "وفقاً للمادة 74، ما هي العقوبة التي تحكم بها المحكمة على الشاهد المتخلف عن الحضور بعد تكليفه قانوناً؟", o: ["الحبس لمدة أسبوع", "حكماً مبرماً بغرامة من 5 إلى 10 ليرات سورية وتقرر إحضاره جبراً، وتعفيه من الغرامة كلها أو بعضها إذا أثبت العذر", "الشطب من سجل النفوس"], a: 1 },
+        { q: "وفقاً للمادة 78، ما هي عقوبة الشاهد الذي يمتنع عن أداء اليمين أو الإجابة بغير سبب قانوني؟", o: ["يقضى عليه بحكم مبرم بغرامة من 10 إلى 50 ليرة ما لم يتنازل الخصم عن شهادته", "يحبس لمدة 24 ساعة", "لا تفرض عليه أي عقوبة"], a: 0 }
+      ]},
+      { name: "القرائن والإقرار واليمين", questions: [
+        { q: "وفقاً للمادة 89، ما هو أثر القرينة القانونية حسب المادة 89؟", o: ["لا تغني عن الإثبات وتتطلب شهادة شهود", "تغني من تقررت لمصلحته عن أي طريق إثبات آخر، ويجوز نقضها بالدليل العكسي ما لم يوجد نص يقضي بغير ذلك", "لا يجوز نقضها مطلقاً في كل الأحوال"], a: 1 },
+        { q: "وفقاً للمادة 90، ما هي الشروط الواجب توافرها للأخذ بحجية الأحكام وحائزتها درجة القطعية؟", o: ["أن تكون صادرة عن أية محكمة ولو لم تكن قطعية", "أن يكون النزاع قائماً بين الخصوم أنفسهم دون تغيير صفاتهم وتعلق النزاع بذات الحق محلاً وسبباً، ولا تأخذ بها المحكمة تلقائياً", "أن تأخذ بها المحكمة من تلقاء نفسها في جميع الدعاوى"], a: 1 },
+        { q: "وفقاً للمادة 91، هل يلتزم القاضي المدني بالحكم الجزائي وفقاً لقانون البينات؟", o: ["يلتزم بالحكم الجزائي في كافة تفاصيله ومقدماته", "لا يرتبط القاضي المدني بالحكم الجزائي في الوقائع التي لم يفصل فيها هذا الحكم أو الوقائع التي فصل فيها دون ضرورة", "لا حجية للحكم الجزائي أمام القضاء المدني إطلاقاً"], a: 1 },
+        { q: "وفقاً للمادة 92، ما هي القرائن القضائية ومتى يجوز الإثبات بها؟", o: ["هي القرائن المنصوص عليها صراحة في القانون ويجوز دائماً", "هي القرائن التي يستخلصها القاضي من ظروف الدعوى، ولا يجوز الإثبات بها إلا في الأحوال التي يجوز فيها الإثبات بالشهادة", "هي الأدلة الرسمية المسجلة ويجوز بها بكافة القضايا"], a: 1 },
+        { q: "وفقاً للمادة 94، ما هو الإقرار القضائي؟", o: ["إقرار الخصم خارج المحكمة بحضور شاهدين", "اعتراف الخصم أو من ينوب عنه نيابة خاصة بواقعة قانونية مدعى بها عليه أمام القضاء أثناء السير في الدعوى المتعلقة بها", "التنازل عن الدعوى أمام كاتب العدل"], a: 1 },
+        { q: "وفقاً للمادة 96، ما هي الشروط الواجب توافرها في المقر لصحة إقراره؟ وما حكم إقرار الصغير المميز المأذون؟", o: ["أن يكون بالغاً 18 سنة فقط دون شرط العقل", "أن يكون عاقلاً بالغاً غير محجور عليه، وإقرار الصغير المميز المأذون له حكم إقرار البالغ في الأمور المأذون فيها", "يصح إقرار الصغير والمجنون بواسطة الولي"], a: 1 },
+        { q: "وفقاً للمادة 98، هل يتوقف الإقرار على قبول المقر له؟ وما حكم الإقرار إذا رد المقر له جزءاً منه؟", o: ["يتوقف على قبول المقر له حتماً", "لا يتوقف على القبول ويرتد برده، وإذا رد مقداراً فلا يبقى حكم الإقرار فيه ويصح في الباقي", "إذا رد المقر له جزءاً يبطل الإقرار بالكامل"], a: 1 },
+        { q: "وفقاً للمادة 99، هل يجوز الرجوع عن الإقرار القضائي؟", o: ["يجوز الرجوع عنه في أي وقت ودون أسباب", "يلزم المرء بإقراره إلا إذا كذب بحكم، ولا يصح الرجوع عن الإقرار إلا لخطأ في الواقع على أن يثبت المقر ذلك", "لا يجوز الرجوع عنه مطلقاً حتى لو ثبت خطأ الواقع"], a: 1 },
+        { q: "وفقاً للمادة 100 و101، ما هي القوة الإثباتية للإقرار وقابليته للتجزئة؟", o: ["حجة متعدية للغير ولا تتجزأ مطلقاً", "الإقرار حجة قاصرة على المقر، ولا يتجزأ على صاحبه إلا إذا انصب على وقائع متعددة وكان وجود واقعة منها لا يقتضي حتماً وجود الوقائع الأخرى", "يتجزأ الإقرار دائماً بنسبة 50%"], a: 1 },
+        { q: "وفقاً للمادة 111، ما هو الأثر القانوني لتخلف الخصم عن الحضور للاستجواب بغير عذر أو امتناعه عن الإجابة؟", o: ["شطب الدعوى من جدول الدعاوى", "يجاز للمحكمة اتخاذ النكول/التخلف مسوغاً لاعتبار الوقائع ثابتة، أو قبول الإثبات بالشهادة والقرائن في الأحوال التي لم تكن تجوز فيها", "حبس الخصم المتخلف مدة 3 أيام"], a: 1 }
+      ]},
+      { name: "اليمين والمعاينة والخبرة", questions: [
+        { q: "وفقاً للمادة 116، هل يجوز رد اليمين الحاسمة على الخصم الذي وجهها؟", o: ["يجوز ردها دائماً دون استثناءات", "يجوز ردها على الخصم، إلا إذا انصبت اليمين على واقعة لا يشترك فيها الخصمان بل يستقل بها من وجهت إليه اليمين", "لا يجوز رد اليمين الحاسمة مطلقاً"], a: 1 },
+        { q: "وفقاً للمادة 119، ما هي نتيجة نكول الخصم عن اليمين الحاسمة أو نكول من ردت عليه اليمين؟", o: ["تؤجل الدعوى لإعادة التحليف", "يخسر دعواه", "تدفع غرامة مالية وتستمر الدعوى"], a: 1 },
+        { q: "وفقاً للمادة 120، ما هو أثر توجيه اليمين الحاسمة بالنسبة للبينات الأخرى؟", o: ["يتيح تقديم أدلة كتابية جديدة بعد الحلف", "يتضمن التنازل عما عداها من البينات بالنسبة للواقعة، ولا يجوز إثباتها إلا إذا ثبت الكذب فيطالب بالتعويض", "لا يؤثر على حق الخصم في استدعاء الشهود"], a: 1 },
+        { q: "وفقاً للمادة 121، ما هي اليمين المتممة وما هي شروط توجيهها من قبل المحكمة؟", o: ["يوجهها الخصم لخصمه عند غياب الأدلة", "توجها المحكمة تلقائياً لأي من الخصمين لتبني عليها حكمها، بشرط ألا يكون في الدعوى دليل كامل ولا تكون خالية من أي دليل", "توجّه في الدعاوى التي يخلو ملفها من أي دليل تماماً"], a: 1 },
+        { q: "وفقاً للمادة 124، هل يجوز للخصم الذي وجهت له المحكمة اليمين المتممة أن يردها على الخصم الآخر؟", o: ["نعم، يجوز له ردها بشروط اليمين الحاسمة", "لا يجوز للخصم الذي وجهت له المحكمة اليمين المتممة أن يردها على الخصم الآخر", "يجوز ردها بإذن رئيس المحكمة حصراً"], a: 1 },
+        { q: "وفقاً للمادة 132، هل تجري النيابة في التحليف واليمين؟", o: ["تجري النيابة في التحليف وفي اليمين معاً", "تجري النيابة في التحليف، ولكن لا تجري في اليمين (يجب أن يكون من الأصيل شخصياً)", "لا تجري النيابة في التحليف ولا في اليمين"], a: 1 },
+        { q: "وفقاً للمادة 134، كيف يتم إقرار إجراء المعاينة المتنازع فيه؟", o: ["بطلب من النيابة العامة حصراً", "تقرر المحكمة من تلقاء نفسها أو بناء على طلب الخصوم معاينة الشيء بجبه أو الانتقال إليه أو ندب قاض أو إنابة المحكمة الواقع بدائرتها", "بطلب يقدم إلى دائرة التنفيذ فوراً"], a: 1 },
+        { q: "وفقاً للمادة 138 و139، من يقرر إجراء تحقيق فني بواسطة خبير وكيف يختار الخبراء؟", o: ["إذا كان الفصل موقوفاً على أمور تخصصية، تختارهم المحكمة (خبير واحد أو ثلاثة)، ويختارون باتفاق الخصوم وإلا اختارتهم المحكمة", "تجري الخبرة وجوباً بخمسة خبراء في كل دعوى", "يختار الخبراء دائماً بواسطة الشرطة القضائية"], a: 0 },
+        { q: "وفقاً للمادة 144/3، ما هي اليمين التي يتوجب على الخبير أداؤها؟", o: ["يؤدي اليمين أمام الخصوم في مكان المعاينة", "يؤدي يميناً أمام القاضي المنتدب قبل بدء مهمته بأن يقوم بها بأمانة وصدق، ولا ضرورة لحضور الخصوم ولا لإبلاغهم محضرها", "لا يلزم الخبير بأداء أي يمين إذا كان حلف اليمين عند قيده بالجدول"], a: 1 },
+        { q: "وفقاً للمادة 146 و147، ما هي أسباب والمهل المحددة لطلب رد الخبير؟", o: ["يرد الخبير لأسباب رد القضاة، ويقدم الطلب خلال 3 أيام من تاريخ تعيينه أو إبلاغه، ولا يسقط الحق إذا حدثت أسباب لاحقاً", "يرد الخبير خلال شهر من تاريخ إيداع التقرير", "لا يجوز رد الخبير بعد تسميته إطلاقاً"], a: 0 }
+      ]},
+      { name: "أحكام ختامية في الخبرة والإثبات", questions: [
+        { q: "وفقاً للمادة 155، ما هو الحكم القانوني المقرر بشأن رأي الخبير ومدى إلزاميته للمحكمة؟", o: ["رأي الخبير مقيد للمحكمة ويجب الأخذ به حتماً", "رأي الخبير لا يقيد المحكمة، وإذا حكمت بخلاف رأيه وجب عليها بيان الأسباب التي أوجبت إهمال هذا الرأي كله أو بعضه", "رأي الخبير يعتبر حكماً قضائياً مبرماً"], a: 1 },
+        { q: "وفقاً للمادة 157، ما هي المسؤولية والجزاءات التي تفرض على الخبير إذا لم يقم بمهمته أو استقال دون عذر؟", o: ["الحبس لمدة سنة كاملة", "تحكم المحكمة عليه بالنفقات الضائعة ورد السلفة والتعويضات عند اقتضائها، وغرامة نقدية من 10 إلى 300 ليرة سورية", "الشطب النهائي من النقابة دون غرامات"], a: 1 },
+        { q: "في التزام تعاقدي مدني قيمته 600 ليرة سورية، ادعى المدعي أن هناك اتفاقاً شفهياً على مد الدين. هل يجوز إثبات هذا الاتفاق بالشهادة؟", o: ["نعم، لأن قيمة الالتزام الأصلي تزيد على 500 ليرة", "لا، لأن الالتزام التعاقدي المدني الذي تزيد قيمته على 500 ليرة لا تجوز الشهادة فيه", "نعم، إذا وجد مانع مادي يحول دون الحصول على دليل كتابي"], a: 1 },
+        { q: "شاهد لم يبلغ الخامسة عشرة من عمره، لكنه سليم الإدراك. هل يمكن سماع شهادته؟", o: ["لا، لأنه غير أهل للشهادة مطلقاً", "نعم، بشهادة كاملة بعد حلف اليمين", "نعم، بغير يمين وعلى سبيل الاستدلال فقط"], a: 2 },
+        { q: "ما الفرق بين الإقرار القضائي والإقرار غير القضائي من حيث حجيته؟", o: ["الإقرار القضائي حجة قاصرة على المقر، أما غير القضائي فواقعة يعود تقديرها للقاضي", "الإقرار غير القضائي حجة قاطعة، أما القضائي فيعود تقديره للقاضي", "كلاهما له نفس الحجية القانونية"], a: 0 },
+        { q: "إذا امتنع الشاهد عن أداء اليمين أو عن الإجابة بغير سبب قانوني، ما الجزاء؟", o: ["يحكم عليه بغرامة من 5 إلى 10 ليرات سورية فقط", "يحكم عليه بغرامة من 10 إلى 50 ليرة سورية ما لم يتنازل الخصم عن شهادته", "يحكم عليه بالحبس لمدة أسبوع"], a: 1 },
+        { q: "في دعوى بين تاجرين، تباينت القيود بين دفاتر منتظمة لكليهما. ما السلطة التقديرية للقاضي؟", o: ["يجب الأخذ بدفاتر المدعي لأنها الأسبق", "يجب إهدار البينتين معاً وإحالة الدعوى للخبرة", "يجوز للقاضي إما إهدار البينتين المتعارضتين، وإما الأخذ بإحداهما دون الأخرى حسب ظروف القضية"], a: 2 },
+        { q: "هل يجوز للقاضي أن يحكم بعلمه الشخصي في الدعوى؟", o: ["نعم، إذا كان العلم الشخصي مؤيداً بأدلة كتابية", "لا، ليس للقاضي أن يحكم بعلمه الشخصي", "نعم، في المواد التجارية فقط"], a: 1 },
+        { q: "إذا أراد الخصم سحب ورقة أو سند قدمه للاستدلال به في الدعوى، ما الشروط القانونية؟", o: ["يجوز له سحبه متى شاء دون قيود", "لا يجوز سحبه إلا برضاء خصمه وإذن خطي من رئيس المحكمة بعد حفظ صورة مصدقة عنه", "لا يجوز سحبه مطلقاً بعد تقديمه"], a: 1 },
+        { q: "ما حكم شهادة الأصل للفرع أو الفرع للأصل؟", o: ["مقبولة إذا كانت على واقعة مالية", "غير مقبولة مطلقاً", "مقبولة إذا أذنت المحكمة"], a: 1 }
+      ]}
+    ]
+  }
+};
+
+/* ============================================================
+   دوال مساعدة
+   ============================================================ */
+function getExamStats(examKey) {
+  const exam = questionBank[examKey];
+  let total = 0;
+  exam.sections.forEach(s => total += s.questions.length);
+  return { total, duration: Math.round(total * MIN_PER_QUESTION) };
+}
+
+function generateSerial() {
+  const d = new Date();
+  const rand = Math.floor(Math.random() * 9000) + 1000;
+  return `MA-${d.getFullYear()}${(d.getMonth()+1).toString().padStart(2,'0')}${d.getDate().toString().padStart(2,'0')}-${rand}`;
+}
+
+function formatDate(d) {
+  return d.toLocaleDateString('ar-SY', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+/* ============================================================
+   عرض بطاقات الاختبارات (ديناميكي)
+   ============================================================ */
+function renderExamCards() {
+  const grid = document.getElementById('examsGrid');
+  const icons = { exam1: '⚖️', exam2: '📋', exam3: '📜' };
+  const titles = { exam1: 'قانون العقوبات العام 148/1949 والعقوبات الاقتصادية 3/2013', exam2: 'المسؤولية الجزائية والمسؤولية المسلكية', exam3: 'قانون البينات السوري 359/1947' };
+  
+  let html = '';
+  ['exam1', 'exam2', 'exam3'].forEach(key => {
+    const stats = getExamStats(key);
+    html += `
+      <div class="exam-card" onclick="startExam('${key}')">
+        <div class="icon">${icons[key]}</div>
+        <h3>${titles[key]}</h3>
+        <div class="meta">
+          <span>${stats.total} سؤالاً</span>
+          <span>100 درجة</span>
+          <span>${stats.duration} دقيقة</span>
+          <span>النجاح 75+</span>
+        </div>
+        <button class="start-btn">ابدأ الاختبار</button>
+        <div class="card-credit">إعداد وتصميم: أ. مصطفى اكر</div>
+      </div>`;
+  });
+  grid.innerHTML = html;
+}
+
+/* ============================================================
+   تسجيل الدخول
+   ============================================================ */
+function checkPassword() {
+  const input = document.getElementById('passwordInput').value;
+  const err = document.getElementById('errorMsg');
+  if (input === PASSWORD) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainHeader').style.display = 'flex';
+    document.getElementById('mainContent').style.display = 'block';
+    document.getElementById('mainFooter').style.display = 'block';
+    renderExamCards();
+    err.textContent = '';
+  } else {
+    err.textContent = '❌ كلمة المرور غير صحيحة. حاول مرة أخرى.';
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('passwordInput').focus();
+  }
+}
+document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') checkPassword();
+});
+
+/* ============================================================
+   التنقل
+   ============================================================ */
+function goHome() {
+  if (timerInterval) clearInterval(timerInterval);
+  document.getElementById('homeScreen').style.display = 'block';
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('certificateArea').style.display = 'none';
+  document.getElementById('answerKeyArea').style.display = 'none';
+}
+
+function retryExam() {
+  if (currentExam) startExam(currentExam);
+}
+
+/* ============================================================
+   بدء الاختبار
+   ============================================================ */
+function startExam(examKey) {
+  currentExam = examKey;
+  const exam = questionBank[examKey];
+  currentQuestions = [];
+  exam.sections.forEach((section, sIdx) => {
+    section.questions.forEach(q => {
+      currentQuestions.push({ ...q, sectionIndex: sIdx, sectionName: section.name });
+    });
+  });
+  userAnswers = new Array(currentQuestions.length).fill(null);
+
+  const stats = getExamStats(examKey);
+  document.getElementById('homeScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('certificateArea').style.display = 'none';
+  document.getElementById('answerKeyArea').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+  document.getElementById('examTitle').textContent = exam.title;
+  document.getElementById('submitBtn').disabled = false;
+
+  // المؤقت: 0.9 دقيقة لكل سؤال
+  timeLeft = stats.duration * 60;
+  updateTimer();
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimer();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      submitExam();
+    }
+  }, 1000);
+
+  renderQuestions();
+  renderNavGrid();
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateTimer() {
+  const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+  const s = (timeLeft % 60).toString().padStart(2, '0');
+  document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+  const box = document.getElementById('timerBox');
+  if (timeLeft < 300) box.classList.add('danger');
+  else box.classList.remove('danger');
+}
+
+function renderQuestions() {
+  const container = document.getElementById('questionsContainer');
+  const badgeContainer = document.getElementById('sectionBadgeContainer');
+  container.innerHTML = '';
+  badgeContainer.innerHTML = '';
+  let lastSection = -1;
+
+  currentQuestions.forEach((q, idx) => {
+    if (q.sectionIndex !== lastSection) {
+      const badge = document.createElement('div');
+      badge.className = 'section-badge';
+      badge.textContent = `📑 القسم ${q.sectionIndex + 1}: ${q.sectionName}`;
+      badgeContainer.appendChild(badge);
+      lastSection = q.sectionIndex;
+    }
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `q-${idx}`;
+    const letters = ['أ', 'ب', 'ج'];
+    let optionsHTML = '';
+    q.o.forEach((opt, oIdx) => {
+      optionsHTML += `
+        <div class="option" onclick="selectAnswer(${idx}, ${oIdx})" id="opt-${idx}-${oIdx}">
+          <div class="opt-letter">${letters[oIdx]}</div>
+          <div class="opt-text">${opt}</div>
+        </div>`;
+    });
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;margin-bottom:15px;">
+        <div class="question-number">${idx + 1}</div>
+        <div style="font-size:12px;color:#999;margin-right:10px;">القسم: ${q.sectionName}</div>
+      </div>
+      <div class="question-text">${q.q}</div>
+      <div class="options">${optionsHTML}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function renderNavGrid() {
+  const grid = document.getElementById('navGrid');
+  grid.innerHTML = '';
+  currentQuestions.forEach((_, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.id = `navbtn-${i}`;
+    if (userAnswers[i] !== null) btn.classList.add('answered');
+    btn.onclick = () => document.getElementById(`q-${i}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    grid.appendChild(btn);
+  });
+}
+
+function selectAnswer(qIdx, oIdx) {
+  userAnswers[qIdx] = oIdx;
+  const q = currentQuestions[qIdx];
+  q.o.forEach((_, i) => {
+    const el = document.getElementById(`opt-${qIdx}-${i}`);
+    if (el) el.classList.remove('selected');
+  });
+  const selected = document.getElementById(`opt-${qIdx}-${oIdx}`);
+  if (selected) selected.classList.add('selected');
+
+  const navBtn = document.getElementById(`navbtn-${qIdx}`);
+  if (navBtn) navBtn.classList.add('answered');
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = userAnswers.filter(a => a !== null).length;
+  const pct = (answered / currentQuestions.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+/* ============================================================
+   تقديم الاختبار
+   ============================================================ */
+function submitExam() {
+  const unanswered = userAnswers.filter(a => a === null).length;
+  if (unanswered > 0 && timerInterval) {
+    if (!confirm(`⚠️ لديك ${unanswered} سؤال لم تُجب عليه. هل تريد إنهاء الاختبار؟`)) return;
+  }
+  if (timerInterval) clearInterval(timerInterval);
+
+  const totalQuestions = currentQuestions.length;
+  let totalCorrect = 0;
+  const sectionStats = questionBank[currentExam].sections.map(s => ({
+    name: s.name, total: s.questions.length, correct: 0
+  }));
+
+  currentQuestions.forEach((q, idx) => {
+    if (userAnswers[idx] === q.a) {
+      totalCorrect++;
+      sectionStats[q.sectionIndex].correct++;
+    }
+  });
+
+  // النتيجة = (الصحيح / الإجمالي) × 100 — دائماً من 100
+  const totalScore = Math.round((totalCorrect / totalQuestions) * 100);
+  const passed = totalScore >= PASS_SCORE;
+
+  lastResult = { totalScore, passed, totalCorrect, totalQuestions, sectionStats };
+
+  // عرض النتائج
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  const circle = document.getElementById('resultCircle');
+  circle.className = 'result-circle ' + (passed ? 'pass' : 'fail');
+  document.getElementById('resultScore').textContent = totalScore;
+
+  const title = document.getElementById('resultTitle');
+  title.className = 'result-title ' + (passed ? 'pass' : 'fail');
+  title.textContent = passed ? '🎉 مبروك، لقد نجحت!' : '😔 للأسف، لم تجتز الاختبار';
+
+  const msg = document.getElementById('resultMessage');
+  msg.innerHTML = passed
+    ? `لقد حصلت على <strong>${totalScore}</strong> من 100 درجة. أداء ممتاز!<br>عدد الإجابات الصحيحة: ${totalCorrect} من ${totalQuestions}`
+    : `لقد حصلت على <strong>${totalScore}</strong> من 100 درجة. تحتاج إلى 75 درجة للنجاح.<br>عدد الإجابات الصحيحة: ${totalCorrect} من ${totalQuestions}<br>راجع الأسئلة الخاطئة أدناه لتحسين أدائك.`;
+
+  // إظهار/إخفاء زر الشهادة
+  document.getElementById('certBtn').style.display = passed ? 'inline-block' : 'none';
+
+  // ملخص الأقسام
+  const summary = document.getElementById('sectionsSummary');
+  summary.innerHTML = '';
+  sectionStats.forEach(s => {
+    const pct = s.total > 0 ? (s.correct / s.total) * 100 : 0;
+    const ps = pct >= 75;
+    const color = ps ? '#28a745' : '#dc3545';
+    summary.innerHTML += `
+      <div class="section-row">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div class="name">${s.name}</div>
+          <div class="score-badge ${ps ? 'pass' : 'fail'}">${s.correct} / ${s.total}</div>
+        </div>
+        <div class="section-bar"><div class="section-bar-fill" style="width:${pct}%;background:${color};"></div></div>
+      </div>`;
+  });
+
+  // مراجعة الأخطاء
+  const reviewContainer = document.getElementById('reviewContainer');
+  reviewContainer.innerHTML = '';
+  let wrongCount = 0;
+  const letters = ['أ', 'ب', 'ج'];
+  currentQuestions.forEach((q, idx) => {
+    if (userAnswers[idx] !== q.a) {
+      wrongCount++;
+      const yourAns = userAnswers[idx] !== null ? `${letters[userAnswers[idx]]}) ${q.o[userAnswers[idx]]}` : 'لم تجب';
+      const correctAns = `${letters[q.a]}) ${q.o[q.a]}`;
+      const item = document.createElement('div');
+      item.className = 'review-item';
+      item.innerHTML = `
+        <div class="q-text">❌ السؤال ${idx + 1}: ${q.q}</div>
+        <div class="review-answer your-wrong"><span class="label">إجابتك:</span>${yourAns}</div>
+        <div class="review-answer correct-ans"><span class="label">الإجابة الصحيحة:</span>${correctAns}</div>
+        <div style="font-size:12px;color:#888;margin-top:8px;">📚 القسم: ${q.sectionName}</div>`;
+      reviewContainer.appendChild(item);
+    }
+  });
+  if (wrongCount === 0) {
+    reviewContainer.innerHTML = '<div style="text-align:center;padding:30px;color:#28a745;font-size:18px;font-weight:bold;">🌟 ممتاز! لم تخطئ في أي سؤال.</div>';
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================================
+   المودال والتحقق من الكود السري
+   ============================================================ */
+function openCodeModal(service) {
+  pendingService = service;
+  document.getElementById('codeInput').value = '';
+  document.getElementById('codeError').textContent = '';
+  document.getElementById('codeModal').classList.add('show');
+  setTimeout(() => document.getElementById('codeInput').focus(), 100);
+}
+
+function closeCodeModal() {
+  document.getElementById('codeModal').classList.remove('show');
+  pendingService = null;
+}
+
+function verifyCode() {
+  const code = document.getElementById('codeInput').value.trim();
+  if (code === SECRET_CODE) {
+    document.getElementById('codeModal').classList.remove('show');
+    if (pendingService === 'cert') {
+      // الانتقال لطلب الاسم
+      document.getElementById('traineeName').value = traineeNameValue || '';
+      document.getElementById('nameModal').classList.add('show');
+      setTimeout(() => document.getElementById('traineeName').focus(), 100);
+    } else if (pendingService === 'key') {
+      showAnswerKey();
+    }
+  } else {
+    document.getElementById('codeError').textContent = '❌ الرمز غير صحيح';
+  }
+}
+document.getElementById('codeInput').addEventListener('keypress', e => { if (e.key === 'Enter') verifyCode(); });
+
+function confirmName() {
+  const name = document.getElementById('traineeName').value.trim();
+  if (name.length < 5) {
+    document.getElementById('nameError').textContent = '⚠️ الرجاء إدخال الاسم الثلاثي كاملاً';
+    return;
+  }
+  traineeNameValue = name;
+  document.getElementById('nameModal').classList.remove('show');
+  showCertificate(name);
+}
+document.getElementById('traineeName').addEventListener('keypress', e => { if (e.key === 'Enter') confirmName(); });
+
+function closeNameModal() {
+  document.getElementById('nameModal').classList.remove('show');
+}
+
+/* ============================================================
+   الشهادة
+   ============================================================ */
+function requestCertificate() {
+  if (!lastResult || !lastResult.passed) {
+    alert('⚠️ الشهادة متاحة للناجحين فقط.');
+    return;
+  }
+  openCodeModal('cert');
+}
+
+function showCertificate(name) {
+  const exam = questionBank[currentExam];
+  const d = new Date();
+  const serial = generateSerial();
+
+  document.getElementById('certName').textContent = name;
+  document.getElementById('certExamTitle').textContent = exam.title;
+  document.getElementById('certScore').textContent = lastResult.totalScore;
+
+  // التقدير
+  let grade = 'مقبول';
+  if (lastResult.totalScore >= 95) grade = 'امتياز مع مرتبة الشرف';
+  else if (lastResult.totalScore >= 90) grade = 'امتياز';
+  else if (lastResult.totalScore >= 85) grade = 'جيد جداً';
+  else if (lastResult.totalScore >= 80) grade = 'جيد';
+  else grade = 'مقبول';
+  document.getElementById('certGrade').textContent = `بتقدير: ${grade}`;
+
+  document.getElementById('certDate').textContent = formatDate(d);
+  document.getElementById('certSerial').textContent = serial;
+  document.getElementById('certRef').textContent = `الرقم المرجعي: ${serial}`;
+
+  document.getElementById('certificateArea').style.display = 'block';
+  document.getElementById('certificateArea').scrollIntoView({ behavior: 'smooth' });
+}
+
+function printCertificate() {
+  const printArea = document.getElementById('printArea');
+  printArea.innerHTML = document.getElementById('printCert').outerHTML;
+  printArea.style.display = 'block';
+  window.print();
+  setTimeout(() => { printArea.style.display = 'none'; printArea.innerHTML = ''; }, 500);
+}
+
+function hideCertificate() {
+  document.getElementById('certificateArea').style.display = 'none';
+}
+
+/* ============================================================
+   سلم التصحيح
+   ============================================================ */
+function requestAnswerKey() {
+  openCodeModal('key');
+}
+
+function showAnswerKey() {
+  const exam = questionBank[currentExam];
+  document.getElementById('akExamTitle').textContent = `الاختبار: ${exam.title}`;
+  const letters = ['أ', 'ب', 'ج'];
+
+  let html = `<table class="answer-key-table">
+    <thead>
+      <tr>
+        <th style="width:50px;">#</th>
+        <th>القسم</th>
+        <th>نص السؤال</th>
+        <th style="width:80px;">الإجابة</th>
+        <th>نص الإجابة الصحيحة</th>
+      </tr>
+    </thead><tbody>`;
+
+  currentQuestions.forEach((q, idx) => {
+    html += `
+      <tr>
+        <td class="q-num">${idx + 1}</td>
+        <td>${q.sectionName}</td>
+        <td>${q.q}</td>
+        <td class="answer-cell">${letters[q.a]}</td>
+        <td>${q.o[q.a]}</td>
+      </tr>`;
+  });
+  html += `</tbody></table>`;
+
+  document.getElementById('akTableContainer').innerHTML = html;
+  document.getElementById('akDate').textContent = formatDate(new Date());
+  document.getElementById('akRef').textContent = generateSerial();
+
+  document.getElementById('answerKeyArea').style.display = 'block';
+  document.getElementById('answerKeyArea').scrollIntoView({ behavior: 'smooth' });
+}
+
+function printAnswerKey() {
+  const printArea = document.getElementById('printArea');
+  printArea.innerHTML = document.getElementById('printKey').outerHTML;
+  printArea.style.display = 'block';
+  window.print();
+  setTimeout(() => { printArea.style.display = 'none'; printArea.innerHTML = ''; }, 500);
+}
+
+function hideAnswerKey() {
+  document.getElementById('answerKeyArea').style.display = 'none';
+}
+
+/* ============================================================
+   إغلاق المودال عند النقر خارجها
+   ============================================================ */
+document.getElementById('codeModal').addEventListener('click', e => {
+  if (e.target.id === 'codeModal') closeCodeModal();
+});
+document.getElementById('nameModal').addEventListener('click', e => {
+  if (e.target.id === 'nameModal') closeNameModal();
+});
+</script>
+</body>
+</html>
