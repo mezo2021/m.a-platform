@@ -1,0 +1,1218 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     M.A EDUCATIONAL PLATFORM v2.0
+     MTHL Framework - Mobile Training Hub Language
+     Developer: M.A Software Company © 2026
+     Original Content: أ. مصطفى اكر (محفوظ الحقوق)
+═══════════════════════════════════════════════════════════════ -->
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="theme-color" content="#0f172a">
+<meta name="description" content="منصة M.A للتدريب والتأهيل - مسابقة القانون المالي الأساسي">
+<title>⚖️ M.A Academy - مسابقة القانون المالي الأساسي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════ DESIGN TOKENS - M.A SYSTEM ═══════════════ */
+:root{
+  --primary:#0f172a; --primary-accent:#1e3a8a; --secondary:#0284c7;
+  --accent:#f59e0b; --bg-color:#f1f5f9; --card-bg:#ffffff;
+  --text-dark:#0f172a; --text-muted:#64748b; --success:#10b981;
+  --danger:#ef4444; --border:#cbd5e1; --gold:#fbbf24;
+  --purple:#8b5cf6; --pink:#ec4899;
+  --gradient-1:linear-gradient(135deg,#667eea,#764ba2);
+  --gradient-gold:linear-gradient(135deg,#fbbf24,#f59e0b,#d97706);
+  --gradient-syria:linear-gradient(135deg,#007a3d,#10b981);
+  --gradient-fire:linear-gradient(135deg,#ef4444,#f59e0b);
+  --gradient-royal:linear-gradient(135deg,#8b5cf6,#667eea,#0284c7);
+  --shadow-sm:0 2px 8px rgba(0,0,0,.06);
+  --shadow-md:0 6px 24px rgba(0,0,0,.1);
+  --shadow-lg:0 15px 50px rgba(0,0,0,.15);
+}
+[data-theme="dark"]{
+  --bg-color:#0a0e1a; --card-bg:#151b2e; --text-dark:#e2e8f0;
+  --text-muted:#94a3b8; --border:#2a3550; --primary-accent:#3b82f6;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg-color); color:var(--text-dark);
+  padding-top:78px; padding-bottom:90px;
+  transition:background .4s,color .4s; overflow-x:hidden; min-height:100vh;
+}
+body::before{
+  content:''; position:fixed; inset:0;
+  background:
+    radial-gradient(circle at 10% 10%,rgba(102,126,234,.15),transparent 40%),
+    radial-gradient(circle at 90% 90%,rgba(245,158,11,.15),transparent 40%),
+    radial-gradient(circle at 50% 50%,rgba(0,122,61,.08),transparent 60%);
+  pointer-events:none; z-index:0;
+}
+.container{max-width:1050px;margin:0 auto;padding:0 18px;position:relative;z-index:1}
+
+/* ═══════════════ ANIMATED HEADER ═══════════════ */
+.top-header{
+  position:fixed; top:0; left:0; right:0; height:70px;
+  background:linear-gradient(135deg,rgba(15,23,42,.98),rgba(30,41,59,.98));
+  backdrop-filter:blur(20px);
+  color:#fff; display:flex; align-items:center; justify-content:space-between;
+  padding:0 22px; box-shadow:0 8px 32px rgba(0,0,0,.35);
+  z-index:1000; border-bottom:3px solid var(--accent);
+}
+.top-header::after{
+  content:''; position:absolute; bottom:-3px; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,#007a3d,#ffffff,#d52b1e,#000000,#007a3d);
+  background-size:300% 100%; animation:rainbow 6s linear infinite;
+}
+@keyframes rainbow{0%{background-position:0%}100%{background-position:300%}}
+.exam-title-head{
+  font-size:1rem;font-weight:700;color:#e2e8f0;
+  text-align:center;flex:1;padding:0 15px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.header-right,.header-left{display:flex;align-items:center;gap:10px}
+
+/* ═══════════════ SMART TIMER ═══════════════ */
+.timer-card{
+  display:flex;align-items:center;gap:8px;
+  background:#020617; border:2px solid var(--accent);
+  padding:6px 16px; border-radius:14px;
+  box-shadow:0 0 18px rgba(245,158,11,.35); transition:all .3s;
+}
+.timer-card.warning{
+  border-color:var(--accent); animation:shake .5s infinite;
+  box-shadow:0 0 25px rgba(245,158,11,.6);
+}
+.timer-card.danger{
+  border-color:var(--danger); animation:shake .3s infinite;
+  box-shadow:0 0 30px rgba(239,68,68,.8);
+}
+.timer-card.danger .timer-display{color:#ef4444}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
+.timer-icon{font-size:1.2rem;color:var(--accent);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.timer-display{font-size:1.4rem;font-weight:900;font-family:monospace;color:#fff;letter-spacing:2px}
+
+.icon-btn{
+  width:42px;height:42px;border-radius:12px;border:none;
+  background:rgba(255,255,255,.08); color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer; font-size:1.2rem; transition:all .25s;
+  border:1px solid rgba(255,255,255,.1);
+}
+.icon-btn:hover{background:rgba(245,158,11,.3);transform:scale(1.1)}
+.icon-btn.active{background:var(--accent);color:#0f172a}
+
+/* ═══════════════ LOGIN CARD - UPGRADED ═══════════════ */
+.brand-badge{
+  display:inline-flex; align-items:center; gap:8px;
+  background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(102,126,234,.15));
+  border:1px solid var(--purple);
+  color:var(--purple); padding:4px 14px; border-radius:20px;
+  font-size:.8rem; font-weight:800; margin-bottom:12px;
+}
+.login-card{
+  background:var(--card-bg); border-radius:24px; padding:30px 28px;
+  box-shadow:var(--shadow-lg); text-align:center;
+  border:1px solid var(--border); max-width:580px; margin:25px auto;
+  position:relative; overflow:hidden;
+}
+.login-card::before{
+  content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+  background:conic-gradient(from 0deg,transparent,rgba(0,122,61,.15),transparent,rgba(245,158,11,.15),transparent);
+  animation:rotate 12s linear infinite; pointer-events:none;
+}
+@keyframes rotate{100%{transform:rotate(360deg)}}
+.login-card>*{position:relative;z-index:1}
+
+.main-title{
+  font-size:1.75rem;font-weight:900;margin-bottom:10px;
+  background:linear-gradient(135deg,#007a3d,#10b981,#f59e0b);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;line-height:1.4;
+}
+.main-subtitle{font-size:.95rem;color:var(--text-muted);margin-bottom:22px;font-weight:600;line-height:1.7}
+
+/* Designer Credit - HIGHLIGHTED */
+.designer-credit{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(217,119,6,.1));
+  border:2px solid var(--accent); padding:10px 22px;border-radius:50px;
+  margin-bottom:22px; box-shadow:0 6px 25px rgba(245,158,11,.25);
+}
+.designer-credit .credit-label{font-size:.85rem;color:var(--text-muted);font-weight:700}
+.designer-credit .credit-name{
+  font-size:1.15rem;font-weight:900; background:var(--gradient-gold);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent; background-clip:text;
+}
+
+/* Mode Selection - NEW */
+.mode-selector{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;
+}
+.mode-card{
+  padding:16px 12px;border-radius:14px;border:2px solid var(--border);
+  background:var(--bg-color);cursor:pointer;transition:all .25s;
+  text-align:center;
+}
+.mode-card:hover{border-color:var(--secondary);transform:translateY(-2px)}
+.mode-card.active{
+  border-color:var(--purple);
+  background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(102,126,234,.05));
+  box-shadow:0 4px 20px rgba(139,92,246,.2);
+}
+.mode-card .mode-icon{font-size:1.8rem;margin-bottom:6px}
+.mode-card .mode-title{font-weight:800;font-size:.9rem;margin-bottom:3px}
+.mode-card .mode-desc{font-size:.72rem;color:var(--text-muted);font-weight:600}
+
+.login-card h2{font-size:1.25rem;color:var(--text-dark);margin-bottom:8px;font-weight:800}
+.login-card p{color:var(--text-muted);margin-bottom:18px;font-size:.93rem;line-height:1.6}
+.login-card input{
+  width:100%;padding:15px;border:2px solid var(--border);border-radius:14px;
+  font-size:1.3rem;text-align:center;outline:none;margin-bottom:14px;
+  letter-spacing:4px;transition:all .3s;background:var(--bg-color);color:var(--text-dark);
+}
+.login-card input:focus{
+  border-color:var(--primary-accent); box-shadow:0 0 0 4px rgba(30,58,138,.15);
+}
+.error-msg{color:var(--danger);font-weight:700;margin-top:10px;display:none;animation:shake .5s}
+
+/* ═══════════════ BUTTONS - ENHANCED ═══════════════ */
+.btn{
+  padding:13px 26px;border-radius:12px;font-weight:700;font-size:1rem;
+  cursor:pointer;border:none;transition:all .25s;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  position:relative;overflow:hidden;
+}
+.btn-primary{background:linear-gradient(135deg,var(--primary-accent),#3b82f6);color:#fff;box-shadow:0 6px 20px rgba(30,58,138,.35)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(30,58,138,.5)}
+.btn-secondary{background:var(--bg-color);color:var(--text-dark);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--border);transform:translateY(-2px)}
+.btn-gold{background:var(--gradient-gold);color:#0f172a;font-weight:900;box-shadow:0 6px 25px rgba(245,158,11,.5)}
+.btn-syria{background:var(--gradient-syria);color:#fff;font-weight:800;box-shadow:0 6px 25px rgba(0,122,61,.5)}
+.btn-royal{background:var(--gradient-royal);color:#fff;font-weight:800;box-shadow:0 6px 25px rgba(139,92,246,.5)}
+.btn-action{background:rgba(2,132,199,.15);color:var(--secondary);border:1px solid var(--secondary)}
+.btn-action:hover{background:var(--secondary);color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+
+/* ═══════════════ QUIZ VIEW ═══════════════ */
+#quiz-view{display:none}
+
+/* Progress Ring - NEW */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.stat-chip{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:14px;padding:10px 12px;text-align:center;
+  box-shadow:var(--shadow-sm);transition:all .3s;position:relative;overflow:hidden;
+}
+.stat-chip::before{
+  content:'';position:absolute;top:0;left:0;width:100%;height:3px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.stat-chip:hover::before{opacity:1}
+.stat-chip .label{font-size:.7rem;color:var(--text-muted);font-weight:700;margin-bottom:4px}
+.stat-chip .value{font-size:1.3rem;font-weight:900;color:var(--primary-accent);transition:all .3s}
+.stat-chip.streak .value{color:#f59e0b}
+.stat-chip.score .value{color:#10b981}
+.stat-chip.xp .value{color:#8b5cf6}
+.stat-chip.pulse .value{animation:statPulse .4s ease}
+@keyframes statPulse{0%{transform:scale(1)}50%{transform:scale(1.3);color:var(--gold)}100%{transform:scale(1)}}
+
+.progress-section{
+  background:var(--card-bg);padding:14px 20px;border-radius:16px;
+  margin-bottom:20px;box-shadow:var(--shadow-sm);
+  border:1px solid var(--border);display:flex;align-items:center;gap:16px;
+}
+.progress-bar-container{flex-grow:1;height:12px;background:var(--bg-color);border-radius:10px;overflow:hidden}
+.progress-bar-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#0284c7,#1e3a8a,#667eea,#8b5cf6);
+  transition:width .5s cubic-bezier(.4,0,.2,1);border-radius:10px;
+  position:relative;
+}
+.progress-bar-fill::after{
+  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+  animation:shimmer 2s infinite;
+}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.progress-text{font-weight:700;color:var(--primary-accent);font-size:.9rem;white-space:nowrap}
+
+/* ═══════════════ QUESTION CARD ═══════════════ */
+.quiz-card{
+  background:var(--card-bg);border-radius:22px;padding:30px;
+  box-shadow:var(--shadow-md); border:1px solid var(--border);
+  margin-bottom:22px; position:relative; overflow:hidden;
+  animation:cardIn .4s ease;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+.quiz-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:5px;
+  background:linear-gradient(90deg,#007a3d,#10b981,#f59e0b,#d52b1e);
+}
+.question-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.question-number{
+  background:linear-gradient(135deg,var(--primary-accent),#667eea);
+  color:#fff;font-weight:800;padding:6px 16px;border-radius:12px;font-size:.9rem;
+  box-shadow:0 4px 12px rgba(30,58,138,.3);
+}
+.tool-btn-group{display:flex;gap:8px}
+.tool-btn{
+  background:var(--bg-color);border:1px solid var(--border);color:var(--text-dark);
+  padding:6px 12px;border-radius:10px;font-size:.85rem;font-weight:700;
+  cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .2s;
+}
+.tool-btn:hover{border-color:var(--secondary);color:var(--secondary)}
+.tool-btn.active{background:rgba(245,158,11,.2);border-color:var(--accent);color:var(--accent)}
+
+.question-text{font-size:1.1rem;font-weight:700;color:var(--text-dark);line-height:1.8;margin-bottom:20px}
+
+/* ═══════════════ OPTIONS - ENHANCED ═══════════════ */
+.options-list{display:flex;flex-direction:column;gap:13px}
+.option-item{
+  display:flex;align-items:center;padding:15px 18px;
+  border:2px solid var(--border);border-radius:14px;
+  cursor:pointer;transition:all .25s ease;
+  background:var(--card-bg);position:relative;
+}
+.option-item:hover{border-color:var(--secondary);background:rgba(2,132,199,.05);transform:translateX(-4px)}
+.option-item.selected{
+  border-color:var(--primary-accent);
+  background:linear-gradient(135deg,rgba(30,58,138,.08),rgba(102,126,234,.08));
+}
+.option-item.correct-reveal{
+  border-color:var(--success)!important;
+  background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(16,185,129,.05))!important;
+  animation:correctFlash .6s ease;
+}
+@keyframes correctFlash{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+.option-item.wrong-reveal{
+  border-color:var(--danger)!important;
+  background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(239,68,68,.05))!important;
+}
+.option-prefix{
+  width:34px;height:34px;border-radius:50%; background:var(--bg-color);
+  color:var(--text-muted); display:flex;align-items:center;justify-content:center;
+  font-weight:800;margin-left:14px;flex-shrink:0;transition:all .3s;
+}
+.option-item.selected .option-prefix{background:var(--primary-accent);color:#fff}
+.option-item.correct-reveal .option-prefix{background:var(--success);color:#fff}
+.option-item.wrong-reveal .option-prefix{background:var(--danger);color:#fff}
+.option-label{font-size:.95rem;font-weight:600;color:var(--text-dark);line-height:1.5;flex:1}
+
+/* ═══════════════ FEEDBACK BOX ═══════════════ */
+.feedback-box{
+  margin-top:18px;padding:16px 20px;border-radius:14px;
+  font-weight:700;display:none;align-items:center;gap:12px;
+}
+.feedback-box.show{display:flex;animation:fbIn .4s ease}
+@keyframes fbIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.feedback-box.correct{background:rgba(16,185,129,.12);border:2px solid var(--success);color:#065f46}
+.feedback-box.wrong{background:rgba(239,68,68,.12);border:2px solid var(--danger);color:#991b1b}
+
+/* ═══════════════ CONTROLS ═══════════════ */
+.controls-card{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--card-bg);padding:16px 22px;border-radius:16px;
+  box-shadow:var(--shadow-sm);border:1px solid var(--border);
+  flex-wrap:wrap;gap:10px;
+}
+.nav-grid-section{
+  margin-top:22px;background:var(--card-bg);padding:18px;
+  border-radius:16px;border:1px solid var(--border);
+}
+.nav-grid-title{font-size:.9rem;font-weight:700;margin-bottom:12px;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.nav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px}
+.nav-grid-item{
+  height:40px;border-radius:10px;border:1px solid var(--border);
+  background:var(--bg-color);display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.85rem;cursor:pointer;position:relative;transition:all .2s;
+}
+.nav-grid-item:hover{transform:scale(1.1)}
+.nav-grid-item.bookmarked::after{
+  content:'★';position:absolute;top:-2px;right:2px;font-size:.65rem;color:var(--accent);
+}
+.nav-grid-item.answered{background:rgba(102,126,234,.15);color:var(--primary-accent)}
+.nav-grid-item.correct{background:rgba(16,185,129,.2);color:#065f46;border-color:var(--success)}
+.nav-grid-item.wrong{background:rgba(239,68,68,.2);color:#991b1b;border-color:var(--danger)}
+.nav-grid-item.active{border-color:var(--primary-accent);box-shadow:0 0 0 2px var(--primary-accent);font-weight:900}
+
+/* ═══════════════ RESULT VIEW - UPGRADED ═══════════════ */
+.result-view{
+  display:none;background:var(--card-bg);border-radius:24px;
+  padding:40px 30px;box-shadow:var(--shadow-lg);
+  text-align:center;border:1px solid var(--border);
+}
+.result-header{
+  font-size:2rem;font-weight:900; background:var(--gradient-1);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.result-score-box{
+  display:inline-block;padding:28px 55px;
+  background:rgba(2,132,199,.08); border-radius:24px;
+  border:2px solid var(--secondary); margin:22px 0;
+  position:relative;
+}
+.result-score-text{
+  font-size:3.8rem;font-weight:900; background:var(--gradient-gold);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.result-status{
+  font-size:1.4rem;font-weight:900;padding:10px 30px;
+  border-radius:30px;display:inline-block;margin-top:14px;
+}
+.status-pass{background:#d1fae5;color:#065f46;border:2px solid var(--success)}
+.status-fail{background:#fee2e2;color:#991b1b;border:2px solid var(--danger)}
+
+.result-details{display:flex;justify-content:center;gap:20px;margin:22px 0;flex-wrap:wrap}
+.detail-chip{padding:10px 20px;border-radius:14px;font-weight:800;font-size:.95rem}
+.detail-chip.green{background:rgba(16,185,129,.15);color:#065f46}
+.detail-chip.red{background:rgba(239,68,68,.15);color:#991b1b}
+.detail-chip.gold{background:rgba(245,158,11,.15);color:#92400e}
+.detail-chip.purple{background:rgba(139,92,246,.15);color:#6d28d9}
+
+/* ═══════════════ ACHIEVEMENT BADGE - NEW ═══════════════ */
+.achievement-card{
+  margin:25px auto;max-width:500px;padding:25px;
+  background:linear-gradient(135deg,#1e3a8a,#0f172a);
+  border-radius:20px;color:#fff;position:relative;overflow:hidden;
+  box-shadow:0 15px 40px rgba(0,0,0,.3);
+}
+.achievement-card::before{
+  content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;
+  background:conic-gradient(from 0deg,transparent,rgba(245,158,11,.3),transparent 30%);
+  animation:rotate 8s linear infinite;
+}
+.achievement-content{position:relative;z-index:1}
+.achievement-badge{
+  font-size:4rem;margin-bottom:10px;animation:bounce 2s infinite;
+}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.achievement-title{font-size:1.3rem;font-weight:900;color:var(--gold)}
+.achievement-subtitle{font-size:.9rem;color:#cbd5e1;margin-top:6px}
+
+/* ═══════════════ MODAL CERTIFICATE ═══════════════ */
+.cert-modal{
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,.75);
+  backdrop-filter:blur(8px); z-index:3000; align-items:center; justify-content:center;
+  padding:20px;overflow-y:auto;
+}
+.cert-modal.active{display:flex}
+.cert-card{
+  background:#fff; color:#0f172a; padding:40px; border-radius:20px;
+  max-width:700px; width:100%; border:8px double #d97706; text-align:center;
+  box-shadow:0 25px 50px rgba(0,0,0,.5); position:relative;
+}
+.cert-title{font-size:1.8rem;font-weight:900;color:#1e3a8a;margin-bottom:10px}
+.cert-subtitle{font-size:1.05rem;color:#64748b;margin-bottom:20px}
+.cert-name{font-size:1.8rem;font-weight:900;color:#d97706;border-bottom:2px solid #cbd5e1;display:inline-block;padding:0 30px 5px;margin:15px 0}
+.cert-footer{display:flex;justify-content:space-between;align-items:center;margin-top:35px;padding-top:20px;border-top:1px solid #e2e8f0}
+
+/* ═══════════════ LEADERBOARD - NEW ═══════════════ */
+.leaderboard{
+  background:var(--card-bg);border-radius:16px;padding:20px;
+  border:1px solid var(--border);margin-top:22px;
+}
+.leaderboard-title{font-size:1rem;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.lb-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14px;border-radius:10px;margin-bottom:6px;
+  background:var(--bg-color);transition:all .2s;
+}
+.lb-row.me{background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(102,126,234,.1));border:1px solid var(--purple)}
+.lb-rank{font-weight:900;font-size:1.1rem;width:35px;color:var(--text-muted)}
+.lb-rank.gold{color:var(--gold)}
+.lb-rank.silver{color:#94a3b8}
+.lb-rank.bronze{color:#b45309}
+.lb-name{flex-grow:1;font-weight:700;font-size:.9rem}
+.lb-score{font-weight:900;color:var(--primary-accent)}
+
+/* ═══════════════ TOAST & CONFETTI ═══════════════ */
+.toast{
+  position:fixed;top:90px;left:50%;transform:translateX(-50%) translateY(-100px);
+  background:var(--card-bg);color:var(--text-dark);padding:14px 28px;
+  border-radius:14px;font-weight:800;box-shadow:var(--shadow-lg);
+  border:2px solid var(--accent);z-index:2000;opacity:0;visibility:hidden;
+  transition:all .4s;max-width:90%;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
+.confetti-piece{position:fixed;width:10px;height:10px;top:-10px;z-index:9999;pointer-events:none;animation:confettiFall linear forwards}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+.app-footer{text-align:center;padding:20px 0 10px;color:var(--text-muted);font-size:.85rem;font-weight:600}
+.app-footer .m-a-brand{
+  background:var(--gradient-royal);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-weight:900;
+}
+
+@media (max-width:768px){
+  body{padding-top:75px}
+  .top-header{height:65px;padding:0 12px}
+  .exam-title-head{font-size:.75rem}
+  .timer-display{font-size:1.1rem}
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
+  .quiz-card{padding:20px}
+  .cert-card{padding:20px}
+  .mode-selector{grid-template-columns:1fr}
+  .result-score-text{font-size:2.8rem}
+}
+</style>
+</head>
+<body>
+
+<header class="top-header">
+  <div class="header-right">
+    <button class="icon-btn" id="sound-btn" title="الصوت">🔊</button>
+    <button class="icon-btn" id="theme-btn" title="المظهر">🌙</button>
+  </div>
+  <div class="exam-title-head">⚖️ M.A Academy | مسابقة القانون المالي (54/2006)</div>
+  <div class="header-left">
+    <div class="timer-card" id="timer-card">
+      <span class="timer-icon">⏳</span>
+      <span class="timer-display" id="timer">50:00</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ═══════════ LOGIN VIEW - M.A BRANDED ═══════════ -->
+  <div class="login-card" id="login-view">
+    <div class="brand-badge">⚡ M.A Academy - منصة التدريب الذكي</div>
+    <h1 class="main-title">⚖️ مسابقة القانون المالي الأساسي</h1>
+    <p class="main-subtitle">
+      اختبار استنتاجي مؤتمت • 50 سؤالاً • درجتان لكل سؤال • نسبة النجاح 75%
+    </p>
+
+    <div class="designer-credit">
+      <span class="credit-label">إعداد وتصميم:</span>
+      <span class="credit-name">أ. مصطفى اكر</span>
+    </div>
+
+    <!-- NEW: Mode Selector -->
+    <div class="mode-selector">
+      <div class="mode-card active" id="mode-full" onclick="selectMode('full')">
+        <div class="mode-icon">📚</div>
+        <div class="mode-title">الاختبار الكامل</div>
+        <div class="mode-desc">50 سؤالاً - 50 دقيقة</div>
+      </div>
+      <div class="mode-card" id="mode-quick" onclick="selectMode('quick')">
+        <div class="mode-icon">⚡</div>
+        <div class="mode-title">الاختبار السريع</div>
+        <div class="mode-desc">10 أسئلة عشوائية</div>
+      </div>
+    </div>
+
+    <h2>🔒 تسجيل الدخول</h2>
+    <p>يرجى إدخال كلمة السر المعتمدة للبدء</p>
+    <input type="password" id="pass-input" placeholder="• • • • • • • •" maxlength="8" onkeypress="if(event.key==='Enter')checkPassword()">
+    <button class="btn btn-royal" style="width:100%;font-size:1.05rem" onclick="checkPassword()">
+      🚀 دخول المنصة
+    </button>
+    <div class="error-msg" id="login-error">⚠️ كلمة السر غير صحيحة، حاول مجدداً!</div>
+
+    <div style="margin-top:20px;font-size:.8rem;color:var(--text-muted)">
+      💡 نصيحة: استخدم وضع <b>الاختبار السريع</b> للتجربة قبل الاختبار الكامل
+    </div>
+  </div>
+
+  <!-- ═══════════ QUIZ VIEW ═══════════ -->
+  <div id="quiz-view">
+    <div class="stats-bar">
+      <div class="stat-chip streak" id="chip-streak">
+        <div class="label">🔥 متتالية</div>
+        <div class="value" id="stat-streak">0</div>
+      </div>
+      <div class="stat-chip score" id="chip-score">
+        <div class="label">⭐ الدرجة</div>
+        <div class="value" id="stat-score">0</div>
+      </div>
+      <div class="stat-chip xp" id="chip-xp">
+        <div class="label">⚡ XP</div>
+        <div class="value" id="stat-xp">0</div>
+      </div>
+      <div class="stat-chip" id="chip-level">
+        <div class="label">📊 المستوى</div>
+        <div class="value" id="stat-level">1</div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-text" id="progress-text">سؤال 1 من 50</div>
+    </div>
+
+    <div class="quiz-card" id="quiz-card">
+      <div class="question-toolbar">
+        <span class="question-number" id="q-number">سؤال 1 (2 درجة)</span>
+        <div class="tool-btn-group">
+          <button class="tool-btn" id="tts-btn" onclick="toggleTTS()" title="نطق السؤال">
+            🔊 <span id="tts-label">استمع</span>
+          </button>
+          <button class="tool-btn" id="bookmark-btn" onclick="toggleBookmark()" title="حفظ بمفضلة الأسئلة">
+            ★ <span id="bm-label">إشارة مرجعية</span>
+          </button>
+        </div>
+      </div>
+      <div class="question-text" id="q-text">جاري التحميل...</div>
+      <div class="options-list" id="options-container"></div>
+      <div class="feedback-box" id="feedback-box">
+        <span class="fb-icon" id="fb-icon">✓</span>
+        <span id="fb-text"></span>
+      </div>
+    </div>
+
+    <div class="controls-card">
+      <button class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()" disabled>◀ السابق</button>
+      <button class="btn btn-gold" onclick="confirmSubmit()">🏁 إنهاء وتصحيح</button>
+      <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()">التالي ▶</button>
+    </div>
+
+    <div class="nav-grid-section">
+      <div class="nav-grid-title">
+        <span>🗺️ خريطة الأسئلة والتنقل السريع:</span>
+        <span style="font-weight:normal;font-size:.8rem">درجة النجاح الأدنى: 75/100</span>
+      </div>
+      <div class="nav-grid" id="nav-grid"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ RESULT VIEW - UPGRADED ═══════════ -->
+  <div class="result-view" id="result-view">
+    <div class="result-header">🎉 نتيجة الامتحان النهائية</div>
+    <p style="color:var(--text-muted);font-size:1.05rem">اختبار القانون المالي الأساسي (المرسوم 54 لعام 2006)</p>
+
+    <div class="result-score-box">
+      <div class="result-score-text" id="score-percentage">0%</div>
+      <div style="font-weight:700;color:var(--text-muted)" id="score-fraction">0 / 100 درجة</div>
+      <div class="result-status" id="result-status">--</div>
+    </div>
+
+    <!-- NEW: Achievement Card -->
+    <div class="achievement-card" id="achievement-card" style="display:none">
+      <div class="achievement-content">
+        <div class="achievement-badge" id="achievement-icon">🏆</div>
+        <div class="achievement-title" id="achievement-title">إنجاز مميز</div>
+        <div class="achievement-subtitle" id="achievement-subtitle">شارك إنجازك مع أصدقائك</div>
+      </div>
+    </div>
+
+    <div class="result-details">
+      <span class="detail-chip green" id="count-correct">✅ صحيحة: 0</span>
+      <span class="detail-chip red" id="count-wrong">❌ خاطئة: 0</span>
+      <span class="detail-chip gold" id="best-score">🏆 أفضل درجة: --</span>
+      <span class="detail-chip purple" id="time-taken">⏱️ الوقت: --</span>
+    </div>
+
+    <div style="margin-top:22px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="window.location.reload()">🔄 إعادة الاختبار</button>
+      <button class="btn btn-gold" id="cert-btn" style="display:none" onclick="showCertificate()">🎓 عرض الشهادة</button>
+      <button class="btn btn-royal" onclick="shareResult()">📤 مشاركة النتيجة</button>
+    </div>
+
+    <!-- NEW: Leaderboard -->
+    <div class="leaderboard">
+      <div class="leaderboard-title">🏅 لوحة الصدارة (محلياً)</div>
+      <div id="leaderboard-content"></div>
+    </div>
+
+    <div class="review-list" style="text-align:right;margin-top:40px;display:flex;flex-direction:column;gap:16px" id="review-list"></div>
+  </div>
+
+  <footer class="app-footer">
+    <div style="margin-bottom:6px">
+      صُمم وطُوّر بواسطة <span class="m-a-brand">M.A Software</span> - للحلول التعليمية الذكية
+    </div>
+    <div>حقوق الطبع والنشر والتصميم محفوظة لـ <b>أ. مصطفى اكر</b> © 2026</div>
+  </footer>
+</div>
+
+<!-- ═══════════ CERTIFICATE MODAL ═══════════ -->
+<div class="cert-modal" id="cert-modal">
+  <div class="cert-card">
+    <div style="font-size:3rem;margin-bottom:10px">📜</div>
+    <div class="cert-title">شهادة اجتياز وتفوق مالية</div>
+    <div class="cert-subtitle">تشهد إدارة التدريب والتأهيل في M.A Academy بأن المتدرب/المتنافس</div>
+    <div class="cert-name" id="cert-user-name">المتنافس المتميز</div>
+    <p style="font-size:1rem;color:#475569;line-height:1.7;margin:15px 0">
+      قد أتم بنجاح اختبار <b>مسابقة القانون المالي الأساسي (المرسوم التشريعي رقم 54 لعام 2006)</b> وحصل على نسبة نجاح أكبر من 75% تثبت كفاءته التشريعية والمالية.
+    </p>
+    <div class="cert-footer">
+      <div>
+        <div style="font-weight:800;color:#0f172a" id="cert-date">2026/09/12</div>
+        <div style="font-size:.8rem;color:#64748b">تاريخ التوثيق</div>
+      </div>
+      <div>
+        <div style="font-weight:900;color:#d97706">أ. مصطفى اكر</div>
+        <div style="font-size:.8rem;color:#64748b">إعداد وتصميم المحتوى</div>
+      </div>
+    </div>
+    <div style="margin-top:15px;font-size:.75rem;color:#94a3b8">
+      منصة M.A Academy للتدريب الذكي - جميع الحقوق محفوظة
+    </div>
+    <button class="btn btn-secondary" style="margin-top:25px" onclick="closeCertificate()">إغلاق الشهادة</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toast-msg"></span></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   M.A ACADEMY ENGINE v2.0
+   State Machine + Audio Engine + Gamification System
+═══════════════════════════════════════════════════════════ */
+
+/* ─────────── GLOBAL STATE ─────────── */
+const State = {
+  currentQuestion: 0,
+  userAnswers: [],
+  bookmarked: [],
+  questions: [],
+  mode: 'full',
+  timerInterval: null,
+  timeLeft: 50 * 60,
+  totalTime: 50 * 60,
+  soundEnabled: true,
+  streak: 0,
+  score: 0,
+  xp: 0,
+  startTime: null,
+  maxStreak: 0
+};
+
+/* ─────────── AUDIO ENGINE ─────────── */
+let audioCtx = null;
+function initAudio(){ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }
+function playTone(freq, dur=0.12, type='sine', vol=0.15){
+  if(!State.soundEnabled) return;
+  try{
+    initAudio();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.value = freq;
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + dur);
+  }catch(e){}
+}
+const SFX = {
+  click: ()=>playTone(600,.06,'sine',.08),
+  correct: ()=>{playTone(800,.1);setTimeout(()=>playTone(1000,.15),90);setTimeout(()=>playTone(1300,.2),180)},
+  wrong: ()=>{playTone(300,.15,'sawtooth',.12);setTimeout(()=>playTone(200,.25,'sawtooth',.12),120)},
+  level: ()=>{playTone(523,.1);setTimeout(()=>playTone(659,.1),80);setTimeout(()=>playTone(784,.15),160)},
+  finish: ()=>{[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,.25,'sine',.2),i*150))},
+  achievement: ()=>{[523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>playTone(f,.3,'triangle',.18),i*100))}
+};
+
+/* ─────────── THEME ─────────── */
+const themeBtn = document.getElementById('theme-btn');
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme', t);
+  themeBtn.textContent = t==='dark' ? '☀️' : '🌙';
+  localStorage.setItem('m_a_theme', t);
+}
+setTheme(localStorage.getItem('m_a_theme') || 'light');
+themeBtn.onclick = ()=>{
+  SFX.click();
+  setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+};
+
+/* ─────────── SOUND TOGGLE ─────────── */
+const soundBtn = document.getElementById('sound-btn');
+soundBtn.onclick = ()=>{
+  State.soundEnabled = !State.soundEnabled;
+  soundBtn.textContent = State.soundEnabled ? '🔊' : '🔇';
+  soundBtn.classList.toggle('active', !State.soundEnabled);
+  if(State.soundEnabled) SFX.click();
+};
+
+/* ─────────── TOAST & CONFETTI ─────────── */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._to);
+  t._to = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+function launchConfetti(count=80){
+  const colors = ['#007a3d','#10b981','#fbbf24','#f5576c','#667eea','#d52b1e','#ffffff','#8b5cf6'];
+  for(let i=0;i<count;i++){
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = Math.random()*100 + 'vw';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.width = p.style.height = (6+Math.random()*8)+'px';
+    p.style.animationDuration = (2+Math.random()*2)+'s';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(), 4500);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ORIGINAL QUESTION BANK - MAINTAINED INTACT
+   50 INFERENTIAL QUESTIONS - أ. مصطفى اكر
+═══════════════════════════════════════════════════════════ */
+const questionsData = [
+{q:"1. إذا أعدت هيئة التخطيط برنامجا تنموياً بخطط خمسية متكاملة يتضمن أهدافا ومؤشرات تنموية واجتماعية، ما المفهوم المالي المحدد لهذه الإجراءات بموجب المرسوم 54؟",options:["الخطة المالية الأساسية السنوية","خطة التنمية الاقتصادية والاجتماعية (الخطة الاقتصادية)","موازنة النفقات الجارية الاستثمارية","الحساب الختامي التقديري"],ans:1},
+{q:"2. قامت وزارة المالية بوضع برنامج مالي سنوي شامل لتأمين كافة نفقات وموارد الدولة وتوزيعها بما يحقق أهداف الخطة التنموية الشاملة. يُصنف هذا البرنامج قانوناً بـ:",options:["البيان التفصيلي للإيرادات والمصروفات الخاصة","الموازنة العامة للدولة","موازنة فائض السيولة المستقلة","جدول حسابات الخزينة الاستثنائية"],ans:1},
+{q:"3. إحدى المؤسسات تقوم بتقديم خدمات الأمن والدفاع ولا تملك استقلالاً مالياً، بينما تقوم شركة أخرى بنشاط صناعي وتتمتع بالاستقلال المالي والإداري. التكييف الصحيح للجهتين على التوالي هو:",options:["جهة اقتصادية / جهة إدارية","جهة ذات طابع إداري / جهة ذات طابع اقتصادي","وحدة إدارية محليّة / مديرية أوقاف","شركة مساهمة خاصة / هيئة خدمية"],ans:1},
+{q:"4. إذا أرادت إحدى مديريات الأوقاف أو الوحدات المحلية ممارسة مسؤولياتها المستقلة مالياً وإدارياً مع الخضوع لرقابة الأجهزة المركزية/وزارة الأوقاف، فإن صفتاهما التشريعية تعتبران:",options:["أجهزة تنفيذية مركزية تتبع رئاسة الجمهورية مباشرة","شركات عامة ذات طابع تجاري محفوف بالمخاطر","هيئات ذات استقلال مالي وإداري وشخصية اعتبارية تحت الرقابة","قطاعاً خاصاً لا ينطبق عليه القانون المالي الأساسي"],ans:2},
+{q:"5. تتضمن نفقات إحدى الوزارات: رواتب الموظفين الجارية، تكاليف صيانة الآلات، أقساط سداد القروض الداخلية، والمنح والتسهيلات. ما الجزء المعتمد كنفقات عامة؟",options:["الإنفاق الجاري على الرواتب والأجور فقط","الإنفاق الاستثماري وتسديدات الدين والمنح فقط","كل ما ذكر يُعد حكماً من مكونات النفقات العامة وفق المادة الأولى","الرواتب والتحويلات الاجتماعية فقط"],ans:2},
+{q:"6. قام مدير عام بطلب صيانة المبنى والتوقيع على الطلب، ثم قام موظف المالية بالتحقق من انجاز الأشغال وتحديد مبلغ الدين المستحق وإصدار أمر بدفعه. ما المفهوم المالي للواقعتين على التوالي؟",options:["تصفية النفقة / عقد النفقة","عقد النفقة / تصفية النفقة وصرفها","الحساب الختامي / محاسبة الإدارة","فائض الموازنة / فائض السيولة"],ans:1},
+{q:"7. أرادت مديرية خدمية تعيين موظف يتولى التأشير المسبق على المعاملات المالية وترتبط مهامه بأمري الصرف مباشرة. ما الوضع الوظيفي الصحيح لهذا الموظف؟",options:["موظف يعين من ملاك الجهة الخدمية ويرتبط بالمدير العام","موظف يعين من ملاك وزارة المالية ويسمى بقرار وزير المالية","خبير خارجي متعاقد يتبع للجهاز المركزي للرقابة","مفتش مالية يعين بقرار من رئيس مجلس الوزراء"],ans:1},
+{q:"8. احتسبت مؤسسة عامة ذات طابع اقتصادي الاهتلاكات السنوية لموجوداتها الثابتة مع المؤونات غير المخصصة لأكثر من سنة. هذه المبالغ تشكل قانوناً:",options:["فائض الموازنة الجاري","فائض السيولة لدى الجهة الاقتصادية","الأرباح الصافية الخاضعة لضريبة الدخل","احتياطي التوسع الصناعي والتجاري"],ans:1},
+{q:"9. قام قسم المحاسبة بتسجيل كافة الإيرادات المحصلة والنفقات المصروفة فعلاً خلال السنة المالية المنتهية دون قيد الالتزامات غير المقبوضة. ما الأساس المحاسبي المطبق هنا؟",options:["أساس الاستحقاق الكامل","الأساس النقدي","أساس الالتزام المباشر","الأساس التقديري والمركب"],ans:1},
+{q:"10. عند إعداد الموازنة العامة للدولة وتجميع التقديرات المالية، أي البيانات التالية يُستثنى قانوناً ولا يجوز إدراجه ضمن التقديرات الموازنية؟",options:["نفقات وإيرادات الوزارات والجهات الخدمية الإدارية","فوائض الجهات الاقتصادية والوحدات المحلية والأوقاف","الأرباح الخاصة الصافية لشركات القطاع الخاص المساهمة","القروض والتسهيلات الائتمانية المزمع الحصول عليها"],ans:2},
+{q:"11. أرادت مديرية الصحة (جهة ذات طابع إداري) إدراج حساباتها ضمن الموازنة العامة للدولة. كيف يُلزمها القانون المالي الأساسي بالظهور؟",options:["تظهر فوائضها المالية الصافية فقط برقم إجمالي","تدخل بجميع نفقاتها وإيراداتها في الموازنة العامة للدولة","ترتبط بموازنة منفصلة كلياً ولا تظهر بالموازنة العامة","تدرج نفقاتها الاستثمارية فقط دون النفقات الجارية"],ans:1},
+{q:"12. أظهرت القيود المالية لمديرية أوقاف إحدى المحافظات فائضاً مالياً سالباً. أين يدرج هذا المبلغ قانوناً في الموازنة العامة للدولة؟",options:["يرد ضمن باب مستقل في جانب الإيرادات العامة","يرد في فرع مستقل ضمن القسم المخصص للوزارة التابعة لها هذه الوحدات والمديريات","يلغى الرقم ولا يظهر إطلاقاً بالموازنة العامة","يحول حكماً إلى دين خارجي طويل الأجل"],ans:1},
+{q:"13. تعرضت مؤسسة عامة ذات طابع اقتصادي لخسائر مالية نتيجة ظروف التشغيل. كيف تُغطى هذه الخسائر بحسب المادة (4) من القانون؟",options:["بفرض ضرائب مباشرة استثنائية على المواطنين","من مبالغ الاحتياطيات المدورة المحتفظ بها لدى تلك الجهات وفق النسب المحددة بقرار وزير المالية","باقتطاع نسبة ثابتة من رواتب العاملين فيها","بإلغاء الموازنة المنفصلة وتحويلها فوراً إلى جهة إدارية"],ans:1},
+{q:"14. لتحديد الفترة الزمنية التي يُقاس عليها الأداء المحاسبي والمالي لجميع وزارات الدولة، تبدأ السنة المالية وتستمر لمدة عام كامل من:",options:["أول كانون الثاني / يناير وتنتهي في نهاية كانون الأول / ديسمبر من كل عام","أول نيسان / أبريل وتنتهي في نهاية آذار / مارس","أول أيلول / سبتمبر وتنتهي في نهاية آب / أغسطس","تختلف من وزارة لأخرى بحسب طبيعة عملها"],ans:0},
+{q:"15. إذا حل الأول من كانون الثاني ولم يُقر مجلس الشعب مشروع الموازنة العامة للدولة للعام الجديد، كيف تتم تغطية النفقات والنفقات النمطية؟",options:["يتوقف الإنفاق العام وتغلق المؤسسات والوزارات","تفتح اعتمادات شهرية مؤقتة بمرسوم على أساس جزء من اثني عشر جزءاً من اعتمادات السنة السابقة","تطبق الموازنة الجديدة بقرار منفرد من وزير المالية","يتم الاقتراض المباشر من المصارف الخاصة للإنفاق"],ans:1},
+{q:"16. ظهرت ظروف طارئة هددت التوازن المالي للموازنة العامة للدولة، واقترح وزير المالية كبح النفقات. ما الصلاحية القانونية المتاحة لمجلس الوزراء؟",options:["حل الجهاز المركزي للرقابة المالية","إيقاف عقد بعض النفقات العامة للحفاظ على توازن الموازنة العامة","إلغاء الموازنات التقديرية للشركات المساهمة","زيادة الاعتمادات المالية دون الحاجة لتغطية"],ans:1},
+{q:"17. عند تبويب نفقات الموازنة العامة، تم تخصيص قسم مستقل لكل وزارة، وفرع مستقل لكل جهة تابعة لهذه الوزارة. هذا التبويب يسمى بـ:",options:["التبويب الوظيفي","التبويب الإداري","التبويب النوعي","التبويب الإقليمي"],ans:1},
+{q:"18. أرادت وزارة المالية تنظيم تبويب إيرادات الموازنة وتحديد نماذجها وبنودها التفصيلية. كيف يتم ذلك قانوناً ومن يُصدر هذه النماذج؟",options:["تبويب إداري / يصدر بقرار من رئيس مجلس الوزراء","تبويب نوعي بالأصل / تحدد النماذج والبنود بقرار من وزير المالية","تبويب إقليمي / يصدر بقرار من رئيس الجهاز المركزي للرقابة","تبويب وظيفي / يصدر بقانون عن مجلس الشعب"],ans:1},
+{q:"19. أعدت إحدى المديريات الفرعية تقديراتها الأولية للموازنة وأرسلتها لوزارتها. ما الجهة الحكومية التي تناقش وتعدل التقديرات لربطها بالواقع والموارد؟",options:["وزارة المالية","هيئة التخطيط والتعاون الدولي بمفردها","الجهاز المركزي للرقابة المالية","المحكمة المالية الإدارية"],ans:0},
+{q:"20. أتم مجلس الوزراء دراسة مشروع الموازنة العامة للدولة. ما المهلة الزمانية الأدنى المطلوبة لرفعه إلى السلطة التشريعية قبل حلول السنة المالية؟",options:["قبل شهر واحد على الأقل","قبل شهرين على الأقل من بدء السنة المالية","قبل ثلاثة أشهر على الأقل","قبل ستة أشهر كاملة"],ans:1},
+{q:"21. قامت شركة عامة للمطاحن (جهة اقتصادية) بالتحضير لإعداد موازنتها التقديرية للعام المقبل. المرجعية الناظمة لقواعد الإعداد هي:",options:["تعليمات الجهاز المركزي للرقابة المالية حصراً","القواعد التي يضعها النظام المالي النافذ لهذه الجهة الاقتصادية","نفس قواعد الجهات الخدمية الإدارية بحرفيتها","قرارات يصدرها الموردون والتجار للشركة"],ans:1},
+{q:"22. ظهرت الحاجة لفتح اعتماد إضافي في الموازنة العامة للدولة لمواجهة التزامات جديدة لم تكن ملحوظة. كيف يُقر الاعتماد الإضافي؟",options:["بقرار منفرد يصدر عن وزير المالية","بنفس طريقة إقرار الموازنة العامة (بقانون يصدر عن السلطة التشريعية)","بقرار تنفيذي من المحافظ في كل محافظة","بتعميم صادر عن مديرية الخزينة المركزية"],ans:1},
+{q:"23. رغبت وزارة بنقل اعتمادات مشاريع استثمارية من فرع تابع لها إلى فرع آخر ضمن موازنتها. من هي السلطة الصالحة لإصدار هذا القرار؟",options:["وزير المالية بمفرده بقرار إداري","رئيس مجلس الوزراء بناء على اقتراح وزير المالية","محاسب الإدارة في الوزارة","مجلس المحافظة المختص"],ans:1},
+{q:"24. بعد إعداد الموازنات التقديرية للجهات ذات الطابع الاقتصادي، كيف يتم إقرار هذه الموازنات بصورة نهائية؟",options:["بمرسوم يصدر فوراً عن وزير المالية","وفق القواعد والأسس التي يحددها النظام المالي لهذه الجهات","بتعليمات يصدرها الجهاز المركزي للرقابة المالية","تضم حكماً إلى أصل قانون الموازنة دون تفصيل"],ans:1},
+{q:"25. قام آمر الصرف بعقد نفقة مالية مع متعهد. لكي تكون هذه العملية صحيحة ومقبولة محاسبياً يجب توفر الضوابط التالية:",options:["أن تصدر من السلطة المختصة وفي حدود القوانين والأنظمة","أن يكون للنفقة اعتماد مالي متوفر بالموازنة","أن تكون قواعد اختيار المتعاقد وتصديق العقد مطابقة للأنظمة النافذة","جميع ما ذكر صحيح كشرط تكاملي لعقد النفقة"],ans:3},
+{q:"26. أرادت إدارة عامة إبرام عقد صيانة وتشغيل حواسب ممتد لعدة سنوات مع شركة تكنولوجيا. إذا تجاوزت مدة العقد 5 سنوات، ما الموافقة المطلوبة؟",options:["موافقة خطية من محاسب الإدارة","موافقة تصدر بمرسوم","موافقة مدير الخزينة المركزية","قرار صادر عن المحافظ المختص"],ans:1},
+{q:"27. وقعت أزمة طارئة نتيجة ظروف جوية استثنائية تطلبت فتح اعتمادات موازنية عاجلة وسريعة جداً. من يملك الصلاحية وبناء على اقتراح من؟",options:["وزير المالية / بناء على اقتراح محاسب الإدارة","رئيس مجلس الوزراء / بناء على اقتراح وزير المالية","رئيس مجلس الشعب / بناء على اقتراح رئيس الرقابة المالية","محافظ مصرف سوريا المركزي / بناء على اقتراح وزير الاقتصاد"],ans:1},
+{q:"28. يطالب متعهد بمستحقات مالية قديمة على الخزينة العامة تعود لسنة 2020، ولكنه لم يطالب بها إطلاقاً حتى انتهاء عام 2025. ما الأثر القانوني؟",options:["تسقط وتتلاشى نهائياً لمصلحة الخزينة بمرور السنة المالية الرابعة التي تلي سنة الاستحقاق","تبقى مستحقة الدفع دون أي تقادم لمدة 99 سنة","تحول تلقائياً إلى سندات دين بفائدة 10%","تسقط بمجرد انتهاء السنة المالية نفسها"],ans:0},
+{q:"29. أرادت وزارة الطاقة تفويض مديرياتها بالمحافظات بعقد صرف نفقات استكشافية مرصودة بموازنتها. من يصدر التعليمات الناظمة لهذا التفويض؟",options:["رئيس الجمهورية","وزير المالية","الجهاز المركزي للرقابة المالية","مدير عام الخزينة المركزية"],ans:1},
+{q:"30. ترتبت على مكلف ضرائب ورسوم عامة لصالح الدولة، وتم إبلاغه رسمياً بالوثيقة المشعرة بوجوب الدفع. متى تسقط هذه حقوق الدولة بالتقادم؟",options:["بعد 3 سنوات من تاريخ التكليف","بعد 5 سنوات من بداية السنة المالية","بعد مرور 15 سنة من تاريخ تبليغ الوثيقة المشعرة بوجوب الدفع","بعد 4 سنوات تلي سنة النشوء"],ans:2},
+{q:"31. أصدر مدير عام إداري أمراً بصرف نفقة مالية قبل أن يتم التأشير عليها من قبل محاسب الإدارة. كيف يُصنف دور المحاسب هنا قانوناً؟",options:["دور استشاري غير ملزم ويحق للمدير تجاوزه","المحاسب يمثل وزير المالية وتأشيره مسبق إجباري على النفقات وأوامر الصرف","تأشير المحاسب اختياري ويقتصر على العقود الاستثمارية فقط","المحاسب يتبع لملاك المدير العام وينفذ أوامره دون اعتراض"],ans:1},
+{q:"32. أتمت الإدارات صرف موازنتها، ما الجهة الحكومية التي خولها القانون المالي الأساسي بمراقبة تنفيذ الموازنة وأموال الدولة وفق قانون إحداثها؟",options:["الهيئة المركزية للرقابة والتفتيش حصراً","الجهاز المركزي للرقابة المالية","المحاكم الجزائية الاستئنافية","اللجان المالية في مجالس المحافظات"],ans:1},
+{q:"33. تعتبر كل وزارة وحدة حسابية مستقلة، فما الجهة المصرفية التي تتولى مهام \"الصندوق\" الحقيقي لهذه الوحدات الحسابية؟",options:["المصرف التجاري السوري بمفرده","مصرف سورية المركزي وفروعه (ويجوز فتح حساب بالمصارف العامة بقرار وزير المالية)","صناديق المؤسسة العامة البريدية","الخزائن الفرعية بالمحافظات بقرار من المحافظ"],ans:1},
+{q:"34. انقضت السنة المالية في 31 كانون الأول. ما هي المهلة القصوى المتاحة للجهات العامة لإرسال حساباتها الختامية وميزانياتها للجهات المختصة؟",options:["شهر واحد من انتهاء السنة المالية","ثلاثة أشهر من انتهاء السنة المالية","ستة أشهر من انتهاء السنة المالية","سنة كاملة من انتهاء السنة المالية"],ans:1},
+{q:"35. تلقت السلطة التشريعية الحسابات الختامية للسنة المالية المنتهية لإقرارها، بينما أعدت المالية نظاماً محاسبياً جديداً. كيف يقر كل منهما؟",options:["تقر الحسابات الختامية بـ (قانون) / ويصدر النظام المحاسبي بـ (مرسوم بناء على اقتراح وزير المالية)","تقر الحسابات الختامية بـ (قرار) / والنظام المحاسبي بـ (تعليمات)","تقر الحسابات الختامية بـ (مرسوم) / والنظام المحاسبي بـ (قانون)","تصدر الحسابات بـ (بيان صحفي) / والنظام بـ (تعميم)"],ans:0},
+{q:"36. أظهرت الحسابات الختامية وجود فوائض سيولة متحققة لدى مؤسسة عامة اقتصادية عن السنة الماضية. من يصدر قرار تسويتها محاسبياً؟",options:["رئيس مجلس الوزراء بناء على اقتراح وزير المالية","وزير الاقتصاد والتجارة الخارجية منفصلاً","رئيس الجهاز المركزي للرقابة المالية","المدير العام للمؤسسة الاقتصادية نفسه"],ans:0},
+{q:"37. احتاجت الدولة لإبرام اتفاقية قرض دولي لتطوير البنية التحتية، وإدارة الدين الحكومي الناشئ عنه. من المسؤول والمخول بالتوقيع؟",options:["مصرف سوريا المركزي / التوقيع لحاكم المصرف","وزارة المالية مسؤولية الإدارة / التوقيع لوزير المالية أو من يفوضه رئيس الوزراء","هيئة التخطيط والتعاون الدولي / التوقيع لرئيس الهيئة","وزارة الخارجية / التوقيع لوزير الخارجية"],ans:1},
+{q:"38. صدر المرسوم التشريعي رقم 54 لعام 2006 ونُشر بالجريدة الرسمية ملغياً المرسوم 92 لعام 1967. متى بدأ العمل الفعلي بأحكامه؟",options:["اعتباراً من تاريخ صدوره في 1-10-2006","اعتباراً من 1-1-2008","اعتباراً من 1-1-2007","بعد خمس سنوات من تاريخ النشر"],ans:1},
+{q:"39. لم يقم مكلف بتسديد الضريبة المستحقة عليه رغم إنذاره. قامت المالية بتبليغه إخطاراً رسمياً بالدفع. الهدف القانوني المحاسبي لهذا الإجراء هو:",options:["إلغاء الضريبة وتحويلها إلى دين معدوم","قطع مهلة التقادم وبدء احتساب مدة التقادم الطويل (15 سنة) من تاريخ التبليغ","تحويل المادة إلى القضاء الجزائي خلال 24 ساعة","مصادرة أموال مكلفين آخرين تربطهم به صلة قرابة"],ans:1},
+{q:"40. أعدت جهة إدارية أمر صرف لنفقة معينة ولكنها احتسبت المبلغ بالاستناد لتقديرات غير مكتملة الوثائق. ما موقف محاسب الإدارة؟",options:["التأشير فوراً وتغطية النقص لاحقاً","امتناع المحاسب عن التأشير حتى استكمال وثائق تصفية النفقة وتحديد مقدارها واستحقاقها","إلغاء الموازنة الخدمية للجهة بالكامل","تحويل الفروق إلى صندوق فائض السيولة"],ans:1},
+{q:"41. في نهاية السنة المالية، بقيت اعتمادات موازنية جارية مرصودة لوزارة التربية لم يتم استخدامها أو التلزم بها. ما مصير هذه الاعتمادات؟",options:["تُدور تلقائياً وتضاف إلى اعتمادات السنة المالية المقبلة","تسقط وتلغى بنهاية السنة المالية ولا يجوز استخدامها وفق الأساس النقدي والسنوية","تحول إلى حساب شخصي لآمر الصرف","تُصرف فوراً ككافآت للموظفين"],ans:1},
+{q:"42. حققت شركة عامة اقتصادية أرباحاً صافية بعد اقتطاع ضريبة الدخل. حصة الدولة من هذه الأرباح تعتبر قانوناً من مكونات:",options:["فائض السيولة لدى الشركة","فائض الموازنة المورد لحساب الخزينة العامة","الاحتياطي الإجباري للقطاع الخاص","الاعتمادات الإضافية الاستثنائية"],ans:1},
+{q:"43. قامت إدارة عامة بنقل مبالغ مخصصة للبناء والإنشاءات (نفقات استثمارية) لتغطية الرواتب والمكافآت (نفقات جارية) دون سند. هذا الإجراء يعتبر:",options:["تصرفاً قانونياً سليماً طالما النفقات ضمن نفس الوزارة","مخالفة لقواعد المناقلات الموازنية التي تتطلب قرارات وموافقات ضابطة حسب القانون","إجراءً يحق لمحاسب الإدارة اتخاذه بقرار منفرد","تعديلاً مستحباً لتوازن الموازنة العامة"],ans:1},
+{q:"44. أبرمت جهة حكومية عقداً رتب التزاماً مالياً يتجاوز الاعتمادات المرصودة لها في البند المختص بالموازنة. ما وضع هذا الالتزام؟",options:["صحيح ونافذ وتلتزم الخزينة بدفعه فوراً","غير جائز قانوناً ولا يجوز عقد نفقة إلا إذا كان لها اعتماد مالي متوفر بالموازنة","يعتمد بشرط موافقة المورد على تقسيط المبلغ على 10 سنوات","صحيح بشرط اقتطاعه من موازنة جهة أخرى"],ans:1},
+{q:"45. عند الاتفاق على قرض أجنبي لصالح الدولة، لم تدرج المبالغ المقترضة ضمن الموازنة العامة للدولة. ما الموقف القانوني؟",options:["صحيح، القروض الأجنبية لا تظهر بالموازنة العامة","باطل، يجب إدراج كافة القروض وتعديل تقديرات الموازنة بقوانين الاعتمادات وفق الأصول","صحيح، بشرط إيداع القرض بمصرف خاص","يُكتفى بقرار صادر عن حاكم مصرف سورية المركزي"],ans:1},
+{q:"46. رفض محاسب الإدارة التأشير على أمر صرف لمخالفته الأنظمة المالية، فأصر أمر الصرف على الصرف بقرار خطي. كيف يعالج القانون هذا الخلاف؟",options:["يستسلم المحاسب وينفذ فوراً دون مراجعة","يرفع المحاسب الأمر لوزير المالية للبت فيه ويتحمل أمر الصرف المسؤولية في حال التجاوز الصريح","يُلغى العقد ويغرم المحاسب مالياً","يتم التوجه فوراً للقضاء الجزائي العام"],ans:1},
+{q:"47. إذا صُدر قانون بإلغاء إحدى الهيئات العامة الخدمية ونقل مهامها لوزارة قائمة. كيف تعالج اعتماداتها المتبقية؟",options:["تلغى الاعتمادات وتضيع المستحقات","تنقل اعتماداتها المتبقية إلى موازنة الوزارة التي آلت إليها المهام وفق أصول المناقلات","توزع المبالغ على العاملين قبل الإلغاء","تحول الاعتمادات إلى قرض استثماري"],ans:1},
+{q:"48. الفرق الجوهري في القيود المحاسبية بين \"فائض الموازنة\" و\"فائض السيولة\" للجهات الاقتصادية يكمن في أن الفائض الأول يمثل .......... والثاني يمثل .............",options:["حصة الدولة من الأرباح الصافية / الاهتلاكات والمؤونات غير المخصصة لأكثر من سنة","الرواتب والأجور / تسديدات الدين الخارجي","القروض الممنوحة / المساعدات والمنح الأجنبية","التجهيزات الموردة / القيمة الدفترية للعقارات"],ans:0},
+{q:"49. قامت وزارة المالية بتحديد القواعد التي تُصنف النفقات بناءً على الوظائف والأهداف الأوسع التي تؤديها الدولة (كالتعليم والصحة والدفاع). ما هذا التبويب؟",options:["التبويب الإداري","التبويب الوظيفي","التبويب النوعي","التبويب الجغرافي والإقليمي"],ans:1},
+{q:"50. استناداً للمادة (38) من المرسوم التشريعي رقم 54 لعام 2006، ما الموقف التشريعي من القوانين والنصوص السابقة التي تتعارض مع أحكامه؟",options:["تبقى نافذة بالنسبة للشركات الاقتصادية فقط","تُلغى حكماً كافة القوانين والأحكام والنصوص المخالفة لأحكام هذا المرسوم التشريعي","يستمر العمل بالمرسوم 92 لعام 1967 بالتوازي مع القانون الجديد","تُطبق الأحكام المخالفة بشرط موافقة المحافظ المختص"],ans:1}
+];
+
+/* ═══════════ MODE SELECTION ═══════════ */
+function selectMode(mode){
+  State.mode = mode;
+  document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('mode-'+mode).classList.add('active');
+  SFX.click();
+  if(mode === 'quick'){
+    showToast('⚡ تم اختيار الاختبار السريع - 10 أسئلة فقط');
+  } else {
+    showToast('📚 تم اختيار الاختبار الكامل - 50 سؤالاً');
+  }
+}
+
+/* ═══════════ CHECK PASSWORD ═══════════ */
+function checkPassword(){
+  const val = document.getElementById('pass-input').value.trim();
+  const err = document.getElementById('login-error');
+  if(val === '20262026'){
+    SFX.click();
+    document.getElementById('login-view').style.display = 'none';
+    document.getElementById('quiz-view').style.display = 'block';
+    initQuiz();
+  } else {
+    err.style.display = 'block';
+    SFX.wrong();
+    setTimeout(()=>err.style.display='none', 3000);
+  }
+}
+
+/* ═══════════ INITIALIZATION ═══════════ */
+function initQuiz(){
+  // Build questions based on mode
+  if(State.mode === 'quick'){
+    const shuffled = [...questionsData].sort(()=>Math.random()-0.5);
+    State.questions = shuffled.slice(0, 10);
+    State.timeLeft = 10 * 60;
+    State.totalTime = 10 * 60;
+  } else {
+    State.questions = [...questionsData];
+    State.timeLeft = 50 * 60;
+    State.totalTime = 50 * 60;
+  }
+  State.userAnswers = new Array(State.questions.length).fill(null);
+  State.bookmarked = new Array(State.questions.length).fill(false);
+  State.startTime = Date.now();
+  State.maxStreak = 0;
+
+  renderNavGrid();
+  loadQuestion(0);
+  startTimer();
+  setupKeyboardShortcuts();
+}
+
+function renderNavGrid(){
+  const nav = document.getElementById('nav-grid');
+  nav.innerHTML = '';
+  State.questions.forEach((_, i)=>{
+    const b = document.createElement('div');
+    b.className = 'nav-grid-item' + (i===0?' active':'');
+    b.id = 'nav-item-'+i;
+    b.textContent = i+1;
+    b.onclick = ()=>{ SFX.click(); goToQuestion(i); };
+    nav.appendChild(b);
+  });
+}
+
+/* ═══════════ LOAD QUESTION ═══════════ */
+function loadQuestion(idx){
+  State.currentQuestion = idx;
+  const q = State.questions[idx];
+
+  document.getElementById('q-number').textContent = 'سؤال ' + (idx+1) + ' (درجتان)';
+  document.getElementById('q-text').textContent = q.q;
+
+  const bmBtn = document.getElementById('bookmark-btn');
+  const bmLabel = document.getElementById('bm-label');
+  if(State.bookmarked[idx]){
+    bmBtn.classList.add('active'); bmLabel.textContent = 'محفوظة';
+  } else {
+    bmBtn.classList.remove('active'); bmLabel.textContent = 'إشارة مرجعية';
+  }
+
+  const cont = document.getElementById('options-container');
+  cont.innerHTML = '';
+  const prefixes = ['أ','ب','ج','د'];
+
+  q.options.forEach((opt, i)=>{
+    const sel = State.userAnswers[idx] === i;
+    const d = document.createElement('div');
+    d.className = 'option-item' + (sel?' selected':'');
+    d.onclick = ()=>selectOption(i);
+    d.innerHTML = `<span class="option-prefix">${prefixes[i]}</span><span class="option-label">${opt}</span>`;
+    cont.appendChild(d);
+  });
+
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box';
+  if(State.userAnswers[idx] !== null){
+    const isCorrect = State.userAnswers[idx] === q.ans;
+    fb.classList.add('show', isCorrect ? 'correct':'wrong');
+    document.getElementById('fb-icon').textContent = isCorrect ? '✓':'✗';
+    document.getElementById('fb-text').textContent = isCorrect 
+      ? 'إجابة صحيحة! أحسنت (+2 درجة) 🎉' 
+      : 'إجابة خاطئة - الإجابة الصحيحة: ' + prefixes[q.ans] + ') ' + q.options[q.ans];
+  }
+
+  const answered = State.userAnswers.filter(a=>a!==null).length;
+  const pct = ((idx+1)/State.questions.length)*100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `سؤال ${idx+1} من ${State.questions.length} (${answered} مُجابة)`;
+
+  document.getElementById('btn-prev').disabled = idx===0;
+  document.getElementById('btn-next').textContent = idx===State.questions.length-1 ? 'النهاية ✓' : 'التالي ▶';
+
+  document.querySelectorAll('.nav-grid-item').forEach((el,i)=>{
+    el.classList.remove('active');
+    if(i===idx) el.classList.add('active');
+  });
+
+  updateNavGridState(idx);
+}
+
+function updateNavGridState(idx){
+  const nav = document.getElementById('nav-item-'+idx);
+  if(nav){
+    if(State.bookmarked[idx]) nav.classList.add('bookmarked');
+    else nav.classList.remove('bookmarked');
+
+    if(State.userAnswers[idx] !== null){
+      nav.classList.add('answered');
+      if(State.userAnswers[idx] === State.questions[idx].ans) nav.classList.add('correct');
+      else nav.classList.add('wrong');
+    }
+  }
+}
+
+/* ═══════════ SELECT OPTION ═══════════ */
+function selectOption(optIdx){
+  if(State.userAnswers[State.currentQuestion] !== null) return;
+
+  State.userAnswers[State.currentQuestion] = optIdx;
+  const q = State.questions[State.currentQuestion];
+  const isCorrect = optIdx === q.ans;
+
+  const items = document.querySelectorAll('#options-container .option-item');
+  items.forEach((el,i)=>{
+    el.classList.remove('selected');
+    if(i === optIdx) el.classList.add('selected');
+    if(i === q.ans) el.classList.add('correct-reveal');
+    if(i === optIdx && !isCorrect) el.classList.add('wrong-reveal');
+  });
+
+  const fb = document.getElementById('feedback-box');
+  fb.classList.add('show', isCorrect ? 'correct':'wrong');
+  document.getElementById('fb-icon').textContent = isCorrect ? '✓':'✗';
+  const prefixes = ['أ','ب','ج','د'];
+  document.getElementById('fb-text').textContent = isCorrect 
+    ? 'إجابة صحيحة! أحسنت (+2 درجة) 🎉' 
+    : 'إجابة خاطئة - الإجابة الصحيحة: ' + prefixes[q.ans] + ') ' + q.options[q.ans];
+
+  if(isCorrect){
+    SFX.correct(); State.streak++; State.score += 2; State.xp += 10;
+    if(State.streak > State.maxStreak) State.maxStreak = State.streak;
+    if(State.streak % 5 === 0){
+      SFX.level();
+      showToast(`🔥 متتالية رائعة! ${State.streak} إجابات صحيحة`);
+      launchConfetti(30);
+    }
+  } else {
+    SFX.wrong(); State.streak = 0;
+  }
+
+  updateNavGridState(State.currentQuestion);
+  updateStats();
+}
+
+/* ═══════════ STATS ANIMATION ═══════════ */
+function pulseStat(id){
+  const el = document.getElementById(id);
+  el.parentElement.classList.add('pulse');
+  setTimeout(()=>el.parentElement.classList.remove('pulse'), 400);
+}
+
+function updateStats(){
+  document.getElementById('stat-streak').textContent = State.streak;
+  document.getElementById('stat-score').textContent = State.score;
+  document.getElementById('stat-xp').textContent = State.xp;
+  const level = Math.floor(State.xp/80) + 1;
+  document.getElementById('stat-level').textContent = level;
+}
+
+/* ═══════════ BOOKMARK & TTS ═══════════ */
+function toggleBookmark(){
+  State.bookmarked[State.currentQuestion] = !State.bookmarked[State.currentQuestion];
+  SFX.click();
+  showToast(State.bookmarked[State.currentQuestion] ? 'تمت إضافة السؤال للمفضلة ★' : 'تمت إزالة السؤال من المفضلة');
+  loadQuestion(State.currentQuestion);
+}
+
+function toggleTTS(){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const qText = State.questions[State.currentQuestion].q;
+    const msg = new SpeechSynthesisUtterance(qText);
+    msg.lang = 'ar-SA';
+    window.speechSynthesis.speak(msg);
+    showToast('جاري قراءة السؤال... 🔊');
+  } else {
+    showToast('خاصية القراءة الصوتية غير مدعومة في متصفحك');
+  }
+}
+
+function setupKeyboardShortcuts(){
+  document.addEventListener('keydown', (e)=>{
+    if(document.getElementById('quiz-view').style.display === 'block'){
+      if(e.key === 'ArrowLeft') nextQuestion();
+      if(e.key === 'ArrowRight') prevQuestion();
+      if(['1','2','3','4'].includes(e.key)){
+        selectOption(parseInt(e.key)-1);
+      }
+    }
+  });
+}
+
+function nextQuestion(){ if(State.currentQuestion < State.questions.length-1){ SFX.click(); loadQuestion(State.currentQuestion+1); } }
+function prevQuestion(){ if(State.currentQuestion > 0){ SFX.click(); loadQuestion(State.currentQuestion-1); } }
+function goToQuestion(i){ loadQuestion(i); }
+
+/* ═══════════ SMART TIMER ═══════════ */
+function startTimer(){
+  updateTimerDisplay();
+  State.timerInterval = setInterval(()=>{
+    State.timeLeft--;
+    updateTimerDisplay();
+    const tc = document.getElementById('timer-card');
+    if(State.timeLeft <= 60){ tc.classList.remove('warning'); tc.classList.add('danger'); }
+    else if(State.timeLeft <= 300){ tc.classList.add('warning'); tc.classList.remove('danger'); }
+    if(State.timeLeft <= 0){
+      clearInterval(State.timerInterval);
+      showToast('⏰ انتهى الوقت! جاري تصحيح الاختبار...');
+      setTimeout(submitExam, 800);
+    }
+  },1000);
+}
+function updateTimerDisplay(){
+  const m = Math.floor(State.timeLeft/60); const s = State.timeLeft%60;
+  document.getElementById('timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+/* ═══════════ SUBMIT & RESULTS ═══════════ */
+function confirmSubmit(){
+  const un = State.userAnswers.filter(a=>a===null).length;
+  let msg = 'هل أنت متأكد من إنهاء وتصحيح الاختبار؟';
+  if(un>0) msg = `لديك ${un} سؤال لم تُجب عليها. هل تريد الإنهاء والتصحيح الآن؟`;
+  if(confirm(msg)) submitExam();
+}
+
+function submitExam(){
+  clearInterval(State.timerInterval);
+  let correctCount = 0, wrongCount = 0;
+  State.userAnswers.forEach((a,i)=>{
+    if(a === State.questions[i].ans) correctCount++;
+    else wrongCount++;
+  });
+
+  const totalQuestions = State.questions.length;
+  const maxScore = totalQuestions * 2;
+  const finalScore = correctCount * 2;
+  const pct = Math.round((finalScore / maxScore) * 100);
+
+  document.getElementById('quiz-view').style.display = 'none';
+  const rv = document.getElementById('result-view');
+  rv.style.display = 'block';
+
+  document.getElementById('score-percentage').textContent = pct + '%';
+  document.getElementById('score-fraction').textContent = finalScore + ' / ' + maxScore + ' درجة';
+  document.getElementById('count-correct').textContent = '✅ صحيحة: ' + correctCount;
+  document.getElementById('count-wrong').textContent = '❌ خاطئة: ' + wrongCount;
+
+  // Time taken
+  const timeTaken = Math.floor((Date.now() - State.startTime) / 1000);
+  const tm = Math.floor(timeTaken/60), ts = timeTaken%60;
+  document.getElementById('time-taken').textContent = `⏱️ الوقت: ${tm}:${String(ts).padStart(2,'0')}`;
+
+  // Best score
+  const best = localStorage.getItem('m_a_best') || 0;
+  const newBest = Math.max(parseInt(best), pct);
+  localStorage.setItem('m_a_best', newBest);
+  document.getElementById('best-score').textContent = '🏆 أفضل نسبة: ' + newBest + '%';
+
+  // Result status
+  const statusEl = document.getElementById('result-status');
+  const certBtn = document.getElementById('cert-btn');
+  const achCard = document.getElementById('achievement-card');
+
+  if(pct >= 75){
+    statusEl.textContent = 'النتيجة: ناجح بتفوق ممتاز 🎉';
+    statusEl.className = 'result-status status-pass';
+    certBtn.style.display = 'inline-flex';
+    achCard.style.display = 'block';
+    launchConfetti(120); SFX.achievement();
+    
+    // Achievement content
+    let achIcon = '🏆', achTitle = 'شهادة تفوق', achSub = 'أداء استثنائي!';
+    if(pct === 100){ achIcon = '👑'; achTitle = 'العلامة الكاملة!'; achSub = 'أنت خبير في القانون المالي الأساسي'; }
+    else if(pct >= 90){ achIcon = '🥇'; achTitle = 'خبير القانون المالي'; achSub = 'أداء متميز جداً'; }
+    else if(pct >= 80){ achIcon = '🥈'; achTitle = 'محترف'; achSub = 'أداء رائع'; }
+    else { achIcon = '🥉'; achTitle = 'متميز'; achSub = 'أداء جيد جداً'; }
+    
+    document.getElementById('achievement-icon').textContent = achIcon;
+    document.getElementById('achievement-title').textContent = achTitle;
+    document.getElementById('achievement-subtitle').textContent = achSub + ' - شارك إنجازك!';
+  } else {
+    statusEl.textContent = 'النتيجة: راسب - حاول مجدداً 💪';
+    statusEl.className = 'result-status status-fail';
+    SFX.wrong();
+  }
+
+  // Save to leaderboard
+  saveToLeaderboard(pct, correctCount, totalQuestions);
+  renderLeaderboard();
+
+  // Review List
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '<h3 style="margin-bottom:18px">📋 مراجعة وتصحيح تفصيلي:</h3>';
+  const prefixes = ['أ','ب','ج','د'];
+  State.questions.forEach((q,i)=>{
+    const a = State.userAnswers[i];
+    const ok = a === q.ans;
+    const item = document.createElement('div');
+    item.style.cssText = `background:var(--bg-color);padding:18px;border-radius:14px;border-right:5px solid ${ok?'var(--success)':'var(--danger)'}`;
+    const userTxt = a!==null ? prefixes[a]+') '+q.options[a] : 'لم تُجب';
+    const corrTxt = prefixes[q.ans]+') '+q.options[q.ans];
+    item.innerHTML = `
+      <div style="font-weight:800;font-size:1.02rem;margin-bottom:8px">${q.q}</div>
+      <div style="color:${ok?'var(--success)':'var(--danger)'};font-weight:700">إجابتك: ${userTxt} ${ok?'✓ (+2)':'✗ (0)'}</div>
+      ${!ok ? `<div style="color:var(--primary-accent);font-weight:700;margin-top:4px">الإجابة الصحيحة: ${corrTxt}</div>` : ''}
+    `;
+    rl.appendChild(item);
+  });
+
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ═══════════ LEADERBOARD SYSTEM ═══════════ */
+function saveToLeaderboard(pct, correct, total){
+  let lb = JSON.parse(localStorage.getItem('m_a_leaderboard') || '[]');
+  lb.push({
+    name: 'أنت',
+    pct: pct,
+    correct: correct,
+    total: total,
+    date: new Date().toLocaleDateString('ar-EG'),
+    me: true
+  });
+  lb.sort((a,b)=>b.pct - a.pct);
+  lb = lb.slice(0, 5);
+  localStorage.setItem('m_a_leaderboard', JSON.stringify(lb));
+}
+
+function renderLeaderboard(){
+  const lb = JSON.parse(localStorage.getItem('m_a_leaderboard') || '[]');
+  const container = document.getElementById('leaderboard-content');
+  if(lb.length === 0){
+    container.innerHTML = '<p style="color:var(--text-muted);text-align:center;font-size:.9rem">لا توجد نتائج محفوظة بعد. كن الأول!</p>';
+    return;
+  }
+  container.innerHTML = '';
+  const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+  lb.forEach((entry, i)=>{
+    const row = document.createElement('div');
+    row.className = 'lb-row' + (entry.me ? ' me' : '');
+    row.innerHTML = `
+      <span class="lb-rank ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${medals[i]}</span>
+      <span class="lb-name">${entry.name} ${entry.me?'(أنت)':''}</span>
+      <span class="lb-score">${entry.pct}%</span>
+    `;
+    container.appendChild(row);
+  });
+}
+
+/* ═══════════ CERTIFICATE & SHARE ═══════════ */
+function showCertificate(){
+  document.getElementById('cert-modal').classList.add('active');
+}
+function closeCertificate(){
+  document.getElementById('cert-modal').classList.remove('active');
+}
+
+function shareResult(){
+  const pct = document.getElementById('score-percentage').textContent;
+  const frac = document.getElementById('score-fraction').textContent;
+  const txt = `⚖️ نتيجتي في مسابقة القانون المالي الأساسي (المرسوم 54/2006) عبر منصة M.A Academy:\n${pct} (${frac})\n🏆 جرّب المنصة الآن!`;
+  if(navigator.share){
+    navigator.share({title:'نتيجة المسابقة المالية - M.A Academy', text:txt}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(txt).then(()=>showToast('تم نسخ النتيجة لمحافظتك! 📋'));
+  }
+}
+</script>
+</body>
+</html>
